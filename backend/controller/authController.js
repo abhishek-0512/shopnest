@@ -33,38 +33,26 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
-
-    // TEMPORARILY DISABLED EMAIL SENDING
-    /*
+    // Generate OTP
     const otp = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
 
-    const message = `
-Welcome to ShopNest, ${name}!
+    console.log("OTP:", otp);
 
-Thank you for registering with us.
-
-Your OTP for ShopNest registration is: ${otp}
-`;
-
-    await sendEmail(
+    const user = await User.create({
+      name,
       email,
-      "Welcome to ShopNest - Your OTP for Registration",
-      message
-    );
-    */
+      password: hashedPassword,
+      otp,
+    });
 
     return res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      verified: user.verified,
       token: generateToken(user._id),
     });
 
@@ -99,6 +87,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        verified: user.verified,
         token: generateToken(user._id),
       });
     }
@@ -110,6 +99,42 @@ const loginUser = async (req, res) => {
   } catch (error) {
     console.error("LOGIN ERROR:", error);
 
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Verify OTP
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    user.verified = true;
+    user.otp = "";
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+    });
+
+  } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
@@ -135,5 +160,6 @@ const getUsers = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  verifyOTP,
   getUsers,
 };
