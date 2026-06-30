@@ -6,7 +6,7 @@ const {
   loginUser,
   verifyOTP,
   getUsers,
-} = require("../controller/authController");
+} = require("../controllers/authController");
 
 const { protect } = require("../middleware/authMiddleware");
 const { admin } = require("../middleware/adminMiddleware");

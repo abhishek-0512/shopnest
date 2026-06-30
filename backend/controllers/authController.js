@@ -1,7 +1,10 @@
 const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const sendEmail = require("../utils/sendEmail");
+
+// Debug Logs
+console.log("USER MODEL TYPE:", typeof User);
+console.log("USER MODEL:", User);
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -33,7 +36,6 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate OTP
     const otp = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
@@ -47,7 +49,7 @@ const registerUser = async (req, res) => {
       otp,
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -59,7 +61,7 @@ const registerUser = async (req, res) => {
   } catch (error) {
     console.error("REGISTER ERROR:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -78,28 +80,43 @@ const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (
-      user &&
-      (await bcrypt.compare(password, user.password))
-    ) {
-      return res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        verified: user.verified,
-        token: generateToken(user._id),
+    console.log("EMAIL RECEIVED:", email);
+    console.log("USER FOUND:", user);
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
       });
     }
 
-    return res.status(401).json({
-      message: "Invalid email or password",
+    const match = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    console.log("PASSWORD RECEIVED:", password);
+    console.log("HASH IN DB:", user.password);
+    console.log("PASSWORD MATCH:", match);
+
+    if (!match) {
+      return res.status(401).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      verified: user.verified,
+      token: generateToken(user._id),
     });
 
   } catch (error) {
     console.error("LOGIN ERROR:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -129,13 +146,13 @@ const verifyOTP = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "OTP verified successfully",
     });
 
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       message: error.message,
     });
   }
@@ -144,14 +161,15 @@ const verifyOTP = async (req, res) => {
 // Get All Users
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password");
+    const users = await User.find({})
+      .select("-password");
 
-    return res.json(users);
+    res.json(users);
 
   } catch (error) {
     console.error("GET USERS ERROR:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: error.message,
     });
   }

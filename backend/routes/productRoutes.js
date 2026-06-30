@@ -10,7 +10,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require("../controller/productController");
+} = require("../controllers/productController"); // <-- changed
 
 const upload = multer({ dest: "uploads/" });
 
