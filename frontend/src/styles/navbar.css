@@ -1,0 +1,172 @@
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 50px;
+  background: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* ---------- Logo ---------- */
+
+.navbar-brand a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.navbar-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.navbar-brand a::after {
+  content: ".";
+  color: #f97316;
+  font-size: 34px;
+}
+
+/* ---------- Links ---------- */
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  list-style: none;
+}
+
+.navbar-links a {
+  position: relative;
+  color: #d4d4d8;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: .3s;
+}
+
+.navbar-links a:hover {
+  color: white;
+}
+
+.navbar-links a.active {
+  color: #f97316;
+}
+
+.navbar-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+
+  width: 0;
+  height: 2px;
+
+  background: #f97316;
+  transition: .3s;
+}
+
+.navbar-links a:hover::after,
+.navbar-links a.active::after {
+  width: 100%;
+}
+
+/* ---------- Cart ---------- */
+
+.cart-count {
+  background: #f97316;
+  color: white;
+
+  border-radius: 50%;
+  padding: 2px 7px;
+
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+/* ---------- Logout ---------- */
+
+.btn-logout {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,.4);
+
+  padding: 8px 16px;
+  border-radius: 6px;
+
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-logout:hover {
+  background: rgba(239,68,68,.1);
+}
+
+/* ---------- Menu Icon ---------- */
+
+.menu-icon {
+  display: none;
+
+  background: transparent;
+  border: none;
+
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width:768px){
+
+  .navbar{
+    padding:15px 20px;
+  }
+
+  .menu-icon{
+    display:block;
+  }
+
+  .navbar-links{
+
+    position:absolute;
+    top:72px;
+    left:0;
+
+    width:100%;
+
+    background:#111827;
+
+    display:none;
+    flex-direction:column;
+
+    gap:20px;
+
+    padding:25px 0;
+  }
+
+  .navbar-links.active{
+    display:flex;
+  }
+}

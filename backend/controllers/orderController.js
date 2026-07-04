@@ -1,97 +1,158 @@
-const Order = require("../model/Order");
+const Order = require("../models/Order");
 const sendEmail = require("../utils/sendEmail");
 
+// =====================
 // CREATE ORDER
+// =====================
 const createOrder = async (req, res) => {
   try {
-    const { items, totalAmount, address, paymentId } = req.body;
-
-    const order = new Order({
-      user: req.user._id,
+    const {
       items,
+      shippingAddress,
       totalAmount,
-      address,
-      paymentId,
+      paymentStatus,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No order items found",
+      });
+    }
+
+    const itemsPrice = items.reduce(
+      (acc, item) => acc + item.price * item.qty,
+      0
+    );
+
+    const shippingPrice = itemsPrice > 999 ? 0 : 99;
+
+    const taxPrice = Math.round(itemsPrice * 0.18);
+
+    const order = await Order.create({
+      user: req.user._id,
+
+      orderItems: items.map((item) => ({
+        product: item.productId,
+        name: item.name,
+        image: item.imageUrl,
+        price: item.price,
+        qty: item.qty,
+      })),
+
+      shippingAddress,
+
+      paymentResult: {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      },
+
+      paymentStatus: paymentStatus || "Paid",
+
+      orderStatus: "Processing",
+
+      itemsPrice,
+
+      shippingPrice,
+
+      taxPrice,
+
+      totalPrice: totalAmount,
     });
 
-    await order.save();
-
-    const message = `Dear ${req.user.name},
-
-Thank you for your order!
+    try {
+      await sendEmail(
+        req.user.email,
+        "Order Confirmation - ShopNest",
+        `
+Hello ${req.user.name},
 
 Your order has been placed successfully.
 
 Order ID: ${order._id}
-Total Amount: ₹${totalAmount}
-Shipping Address: ${address}
 
-We will notify you once your order is shipped.
+Amount: ₹${order.totalPrice}
 
-Regards,
-ShopNest Team`;
-
-    await sendEmail(req.user.email, "Order Confirmation", message);
+Thank you for shopping with ShopNest.
+        `
+      );
+    } catch (emailError) {
+      console.log("Email Error:", emailError.message);
+    }
 
     res.status(201).json({
       success: true,
-      message: "Order created successfully",
       order,
     });
   } catch (error) {
+    console.error("Create Order Error:", error);
+
     res.status(500).json({
       success: false,
-      message: "Error creating order",
-      error: error.message,
+      message: error.message,
     });
   }
 };
 
-// GET LOGGED-IN USER ORDERS
+// =====================
+// MY ORDERS
+// =====================
 const myOrders = async (req, res) => {
   try {
     const orders = await Order.find({
       user: req.user._id,
-    }).populate("items.productId", "name price image");
+    })
+      .populate("orderItems.product", "name price imageUrl")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       orders,
     });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
       message: "Error fetching orders",
-      error: error.message,
     });
   }
 };
 
+// =====================
 // GET ALL ORDERS (ADMIN)
+// =====================
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate(
-      "user",
-      "name email"
-    );
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .populate("orderItems.product", "name price imageUrl")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       orders,
     });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: "Error fetching all orders",
-      error: error.message,
+      message: "Error fetching orders",
     });
   }
 };
 
-// UPDATE ORDER STATUS (ADMIN)
+// =====================
+// UPDATE ORDER STATUS
+// =====================
 const updateOrderStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { orderStatus } = req.body;
 
     const order = await Order.findById(req.params.id);
 
@@ -102,20 +163,21 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    order.status = status;
+    order.orderStatus = orderStatus;
 
     await order.save();
 
     res.status(200).json({
       success: true,
-      message: "Order status updated successfully",
+      message: "Order status updated",
       order,
     });
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: "Error updating order status",
-      error: error.message,
+      message: "Error updating order",
     });
   }
 };

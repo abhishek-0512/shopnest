@@ -10,35 +10,37 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require("../controllers/productController"); // <-- changed
-
-const upload = multer({ dest: "uploads/" });
+} = require("../controllers/productController");
 
 const router = express.Router();
 
+// ✅ FIXED: disk storage (IMPORTANT)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+// =====================
+// ROUTES
+// =====================
+
+// GET ALL + CREATE PRODUCT
 router
   .route("/")
   .get(getProducts)
-  .post(
-    protect,
-    admin,
-    upload.single("image"),
-    createProduct
-  );
+  .post(protect, admin, upload.single("image"), createProduct);
 
+// GET ONE + UPDATE + DELETE
 router
   .route("/:id")
   .get(getProductById)
-  .put(
-    protect,
-    admin,
-    upload.single("image"),
-    updateProduct
-  )
-  .delete(
-    protect,
-    admin,
-    deleteProduct
-  );
+  .put(protect, admin, upload.single("image"), updateProduct)
+  .delete(protect, admin, deleteProduct);
 
 module.exports = router;

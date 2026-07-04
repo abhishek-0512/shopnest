@@ -1,5 +1,31 @@
 {
+  "name": "shopnest",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "abhishek"
+  ],
+  "homepage": "https://github.com/abhishek-0512/shopnest#readme",
+  "bugs": {
+    "url": "https://github.com/abhishek-0512/shopnest/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhishek-0512/shopnest.git"
+  },
+  "license": "ISC",
+  "author": "abhishek gangwar",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:server": "cd backend && npm run dev",
+    "dev:client": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "cd frontend && npm run build"
+  },
   "dependencies": {
-    "mongoose": "^9.7.0"
+    "concurrently": "^10.0.3",
+    "react-icons": "^5.7.0"
   }
 }

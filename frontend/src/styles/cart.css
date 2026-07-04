@@ -1,0 +1,270 @@
+/* =========================
+   CART & CHECKOUT
+========================= */
+
+.cart-container,
+.checkout-container {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.cart-container h2,
+.checkout-container h2 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #fff;
+}
+
+.cart-layout {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+/* =========================
+   LEFT SIDE
+========================= */
+
+.cart-items,
+.checkout-content {
+  flex: 2;
+  background: #18181b;
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #27272a;
+}
+
+/* =========================
+   PRODUCT CARD
+========================= */
+
+.cart-item {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid #2f2f35;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-image {
+  width: 110px;
+  height: 110px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: white;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-details h4 {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.cart-item-details p {
+  color: #b5b5b5;
+  margin: 5px 0;
+}
+
+/* =========================
+   QUANTITY
+========================= */
+
+.qty-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.qty-controls button {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: #f97316;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.qty-controls button:hover {
+  transform: scale(1.05);
+}
+
+.qty-controls span {
+  color: white;
+  font-size: 18px;
+  min-width: 25px;
+  text-align: center;
+}
+
+/* =========================
+   REMOVE BUTTON
+========================= */
+
+.btn-remove {
+  margin-top: 15px;
+  background: crimson;
+  border: none;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-remove:hover {
+  background: #b91c1c;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.cart-summary {
+  flex: 1;
+  background: #18181b;
+  border-radius: 15px;
+  padding: 25px;
+  position: sticky;
+  top: 100px;
+  border: 1px solid #27272a;
+}
+
+.cart-summary h3 {
+  color: white;
+  margin-bottom: 20px;
+}
+
+.cart-summary h4 {
+  color: white;
+  margin: 15px 0 10px;
+}
+
+.cart-summary p {
+  color: #d4d4d8;
+  margin: 8px 0;
+}
+
+.cart-summary span {
+  color: inherit;
+}
+
+.cart-summary hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin: 18px 0;
+}
+
+.cart-summary div {
+  color: white;
+}
+
+.cart-summary h2 {
+  color: #f97316;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-checkout,
+.btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #f97316;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: .3s;
+}
+
+.btn-checkout:hover,
+.btn:hover {
+  background: #ea580c;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.shipping-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.shipping-form h3 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.shipping-form input {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #333;
+  background: #27272a;
+  color: white;
+  outline: none;
+  font-size: 15px;
+}
+
+.shipping-form input:focus {
+  border-color: #f97316;
+}
+
+/* =========================
+   EMPTY CART
+========================= */
+
+.empty-cart {
+  text-align: center;
+  padding: 80px;
+}
+
+.empty-cart p {
+  color: #999;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+.cart-layout{
+flex-direction:column;
+}
+
+.cart-summary{
+position:relative;
+top:0;
+width:100%;
+}
+
+.cart-item{
+flex-direction:column;
+text-align:center;
+}
+
+.cart-item-image{
+margin-bottom:15px;
+}
+
+}
