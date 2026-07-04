@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const { uploadBufferToCloudinary } = require("../config/cloudinary");
 
 // =====================
 // CREATE PRODUCT
@@ -17,6 +18,8 @@ const createProduct = async (req, res) => {
       return res.status(400).json({ message: "Image is required" });
     }
 
+    const result = await uploadBufferToCloudinary(req.file.buffer);
+
     const product = await Product.create({
       name,
       description,
@@ -24,7 +27,7 @@ const createProduct = async (req, res) => {
       category,
       brand,
       stock,
-      imageUrl: `/uploads/${req.file.filename}`,
+      imageUrl: result.secure_url,
     });
 
     res.status(201).json(product);
@@ -81,9 +84,10 @@ const updateProduct = async (req, res) => {
     product.brand = req.body.brand || product.brand;
     product.stock = req.body.stock || product.stock;
 
-    // ✅ If new image uploaded
+    // ✅ If new image uploaded, push to Cloudinary
     if (req.file) {
-      product.imageUrl = `/uploads/${req.file.filename}`;
+      const result = await uploadBufferToCloudinary(req.file.buffer);
+      product.imageUrl = result.secure_url;
     }
 
     const updatedProduct = await product.save();
