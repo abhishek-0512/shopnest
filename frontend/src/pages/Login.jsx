@@ -50,6 +50,9 @@ const Login = () => {
       const data = await res.json();
 
 
+      console.log("LOGIN RESPONSE:", data);
+
+
 
       if (!res.ok) {
 
@@ -63,18 +66,29 @@ const Login = () => {
 
 
       // ===============================
-      // SAVE USER WITH TOKEN
+      // SAVE USER + TOKEN
       // ===============================
 
-      login({
-        ...data.user,
+      const userData = {
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        verified: data.verified,
         token: data.token,
-      });
+      };
+
+
+      console.log("USER SAVED:", userData);
+
+
+
+      login(userData);
 
 
 
       toast.success(
-        `Welcome back ${data.user?.name || "User"} 🎉`
+        `Welcome back ${data.name || "User"} 🎉`
       );
 
 
@@ -166,10 +180,9 @@ const Login = () => {
 
           {
             loading
-              ? "Logging in..."
-              : "Login"
+            ? "Logging in..."
+            : "Login"
           }
-
 
         </button>
 
@@ -179,19 +192,16 @@ const Login = () => {
 
           Don't have an account?{" "}
 
-
           <Link to="/register">
 
             Register
 
           </Link>
 
-
         </p>
 
 
       </form>
-
 
     </div>
 

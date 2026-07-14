@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // Debug Logs
-console.log("USER MODEL TYPE:", typeof User);
+console.log("USER MODEL TYPE:", typeof User)
 console.log("USER MODEL:", User);
 
 const generateToken = (id) => {
