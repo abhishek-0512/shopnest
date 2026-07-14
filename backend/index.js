@@ -15,20 +15,42 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const app = express();
 
-// DB connection
+// ==============================
+// DB Connection
+// ==============================
+
 connectDB();
 
 // ==============================
 // Middleware
 // ==============================
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://shopnest-tau-pink.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://shopnest-tau-pink.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, mobile apps, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      // Allow localhost
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow ALL Vercel deployments
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
@@ -85,11 +107,11 @@ app.use((err, req, res, next) => {
 // Start Server
 // ==============================
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log("=======================================");
-  console.log(`🚀 ShopNest Backend Running`);
+  console.log("🚀 ShopNest Backend Running");
   console.log(`🌍 Server : http://localhost:${PORT}`);
   console.log("=======================================");
 });
