@@ -64,11 +64,25 @@ const createOrder = async (req, res) => {
       totalPrice: totalAmount,
     });
 
-    try {
-      await sendEmail(
-        req.user.email,
-        "Order Confirmation - ShopNest",
-        `
+    // ============================================================
+    // Respond immediately — do NOT make the user wait on the email.
+    // The order is already saved at this point, so the frontend
+    // should move on right away instead of hanging on SMTP.
+    // ============================================================
+    res.status(201).json({
+      success: true,
+      order,
+    });
+
+    // ============================================================
+    // Fire-and-forget email — runs after the response is sent.
+    // Any failure here is only logged, never blocks or affects
+    // the user's checkout flow.
+    // ============================================================
+    sendEmail(
+      req.user.email,
+      "Order Confirmation - ShopNest",
+      `
 Hello ${req.user.name},
 
 Your order has been placed successfully.
@@ -78,15 +92,9 @@ Order ID: ${order._id}
 Amount: ₹${order.totalPrice}
 
 Thank you for shopping with ShopNest.
-        `
-      );
-    } catch (emailError) {
+      `
+    ).catch((emailError) => {
       console.log("Email Error:", emailError.message);
-    }
-
-    res.status(201).json({
-      success: true,
-      order,
     });
   } catch (error) {
     console.error("Create Order Error:", error);
