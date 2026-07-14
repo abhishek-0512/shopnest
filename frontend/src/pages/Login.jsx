@@ -8,96 +8,68 @@ import "../styles/auth.css";
 
 const Login = () => {
 
-
   const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
 
+  const [email, setEmail] = useState("");
 
-  const [email,setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [password,setPassword] = useState("");
-
-  const [loading,setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
 
 
-
-
-
-  const handleSubmit = async (e)=>{
-
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
-
 
     setLoading(true);
 
 
-
-    try{
-
+    try {
 
       const res = await fetch(
-
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
-
         {
+          method: "POST",
 
-          method:"POST",
-
-          headers:{
-
-            "Content-Type":"application/json",
-
+          headers: {
+            "Content-Type": "application/json",
           },
 
-
-          body:JSON.stringify({
-
+          body: JSON.stringify({
             email,
-
             password,
-
           }),
-
         }
-
       );
-
-
-
 
 
       const data = await res.json();
 
 
 
-
-
-      if(!res.ok){
-
+      if (!res.ok) {
 
         toast.error(
-
           data.message || "Login failed"
-
         );
 
-
         return;
-
-
       }
 
 
 
+      // ===============================
+      // SAVE USER WITH TOKEN
+      // ===============================
 
-
-
-      login(data);
+      login({
+        ...data.user,
+        token: data.token,
+      });
 
 
 
@@ -106,21 +78,15 @@ const Login = () => {
       );
 
 
-
       navigate("/");
 
 
+    } catch (error) {
 
-
-
-    }
-
-
-    catch(error){
-
-
-      console.error(error);
-
+      console.error(
+        "LOGIN ERROR:",
+        error
+      );
 
 
       toast.error(
@@ -128,49 +94,28 @@ const Login = () => {
       );
 
 
-    }
-
-
-    finally{
-
+    } finally {
 
       setLoading(false);
 
-
     }
-
-
 
   };
 
 
 
-
-
-
-
-
   return (
-
 
     <div className="auth-container">
 
-
       <form
-
         className="auth-form"
-
         onSubmit={handleSubmit}
-
       >
-
 
         <h2>
           Login
         </h2>
-
-
-
 
 
         <input
@@ -181,15 +126,13 @@ const Login = () => {
 
           value={email}
 
-          onChange={(e)=>setEmail(e.target.value)}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
 
           required
 
         />
-
-
-
-
 
 
 
@@ -201,15 +144,13 @@ const Login = () => {
 
           value={password}
 
-          onChange={(e)=>setPassword(e.target.value)}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
 
           required
 
         />
-
-
-
-
 
 
 
@@ -225,18 +166,12 @@ const Login = () => {
 
           {
             loading
-            ?
-            "Logging in..."
-            :
-            "Login"
+              ? "Logging in..."
+              : "Login"
           }
 
 
         </button>
-
-
-
-
 
 
 
@@ -255,17 +190,12 @@ const Login = () => {
         </p>
 
 
-
-
-
       </form>
 
 
     </div>
 
-
   );
-
 
 };
 
