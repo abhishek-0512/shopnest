@@ -1,73 +1,56 @@
-# 🛒 ShopNest - MERN Stack E-Commerce Platform
+# 🛒 ShopNest
 
-ShopNest is a full-stack e-commerce web application built using the MERN stack.
+A full-stack MERN E-Commerce application with modern UI, authentication, product management, cart, wishlist, and admin features.
 
-It provides a complete shopping experience with authentication, product management, cart, wishlist, orders, and admin functionalities.
+## 🚀 Live Demo
 
----
-
-# 🚀 Live Demo
-
-## Frontend
-
-Coming soon...
-
-## Backend API
-
-https://shopnest-gz0z.onrender.com
+Coming Soon...
 
 ---
 
-# ✨ Features
+## 📌 Features
 
-## 👤 User Features
+### 👤 User Features
 
-- User registration and login
-- JWT authentication
-- Protected routes
-- Browse products
-- Search products
-- Category filtering
-- Product sorting
-- Product details page
-- Add to cart
-- Update cart quantity
-- Remove cart items
-- Wishlist system
-- Checkout
-- Order placement
-- View orders
-- Responsive UI
-
+- User Registration & Login
+- JWT Authentication
+- Browse Products
+- Search Products
+- Category Filtering
+- Product Sorting
+- Product Details Page
+- Add to Cart
+- Update Cart Quantity
+- Wishlist Management
+- Checkout System
+- Order Management
+- User Profile
 
 ---
 
-## 👨‍💼 Admin Features
+### 🛠️ Admin Features
 
-- Admin dashboard
-- Add products
-- Edit products
-- Delete products
-- Manage products
-- Manage orders
-- View users
-
+- Admin Dashboard
+- Add Products
+- Edit Products
+- Delete Products
+- Manage Orders
+- Manage Users
 
 ---
 
-# 🛠️ Tech Stack
+## 🖥️ Tech Stack
 
-## Frontend
+### Frontend
 
 - React.js
-- Vite
 - Redux Toolkit
 - React Router DOM
-- React Toastify
+- React Icons
 - CSS3
+- Vite
 
-
-## Backend
+### Backend
 
 - Node.js
 - Express.js
@@ -75,16 +58,123 @@ https://shopnest-gz0z.onrender.com
 - Mongoose
 - JWT Authentication
 - Multer
-
-
-## Cloud Services
-
-- MongoDB Atlas
 - Cloudinary
-- Render
-- Vercel
 
+### Deployment
+
+- Frontend: Vercel (Coming Soon)
+- Backend: Render
+- Database: MongoDB Atlas
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
+
+```
+ShopNest
+│
+├── backend
+│   ├── controllers
+│   ├── models
+│   ├── routes
+│   ├── config
+│   └── index.js
+│
+└── frontend
+    ├── src
+    │   ├── components
+    │   ├── pages
+    │   ├── redux
+    │   └── styles
+    └── package.json
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### Clone Repository
+
+```bash
+git clone https://github.com/abhishek-0512/shopnest.git
+```
+
+Go to project:
+
+```bash
+cd shopnest
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create `.env`
+
+```
+PORT=8000
+MONGO_URI=your_mongodb_url
+JWT_SECRET=your_secret
+CLOUDINARY_NAME=your_name
+CLOUDINARY_API_KEY=your_key
+CLOUDINARY_API_SECRET=your_secret
+```
+
+Start backend:
+
+```bash
+npm run dev
+```
+
+---
+
+## Frontend Setup
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+```
+
+Create `.env`
+
+```
+VITE_API_URL=http://localhost:8000
+```
+
+Start frontend:
+
+```bash
+npm run dev
+```
+
+---
+
+## 📸 Screenshots
+
+Screenshots will be added soon.
+
+---
+
+## 🔮 Future Improvements
+
+- Online Payment Integration
+- Product Reviews & Ratings
+- Order Tracking
+- Advanced Admin Analytics
+- AI Product Recommendations
+
+---
+
+## 👨‍💻 Author
+
+**Abhishek Gangwar**
+
+GitHub:
+https://github.com/abhishek-0512
