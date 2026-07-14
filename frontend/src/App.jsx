@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Wishlist from "./pages/Wishlist";
 
 // User Pages
 import Home from "./pages/Home";
@@ -26,75 +27,166 @@ import EditProduct from "./admin/EditProduct";
 import AdminOrders from "./admin/AdminOrders";
 import AdminUsers from "./admin/AdminUsers";
 
+
 function App() {
+
   return (
+
     <Router>
+
       <Navbar />
 
+
       <main>
+
         <Routes>
+
+
           {/* ================= USER ROUTES ================= */}
 
-          <Route path="/" element={<Home />} />
 
-          <Route path="/shop" element={<Shop />} />
+          <Route 
+            path="/" 
+            element={<Home />} 
+          />
 
-          <Route path="/product/:id" element={<ProductDetail />} />
 
-          <Route path="/cart" element={<Cart />} />
+          <Route 
+            path="/shop" 
+            element={<Shop />} 
+          />
 
-          <Route path="/checkout" element={<Checkout />} />
 
-          <Route path="/ordersuccess" element={<OrderSuccess />} />
+          <Route 
+            path="/product/:id" 
+            element={<ProductDetail />} 
+          />
 
-          <Route path="/myorders" element={<MyOrders />} />
 
-          <Route path="/profile" element={<Profile />} />
+          <Route 
+            path="/cart" 
+            element={<Cart />} 
+          />
 
-          <Route path="/about" element={<About />} />
 
-          <Route path="/disclaimer" element={<Disclaimer />} />
+          {/* WISHLIST ROUTE ADDED */}
 
-          <Route path="/return-policy" element={<ReturnPolicy />} />
+          <Route
+            path="/wishlist"
+            element={<Wishlist />}
+          />
 
-          <Route path="/login" element={<Login />} />
 
-          <Route path="/register" element={<Register />} />
+          <Route 
+            path="/checkout" 
+            element={<Checkout />} 
+          />
+
+
+          <Route 
+            path="/ordersuccess" 
+            element={<OrderSuccess />} 
+          />
+
+
+          <Route 
+            path="/myorders" 
+            element={<MyOrders />} 
+          />
+
+
+          <Route 
+            path="/profile" 
+            element={<Profile />} 
+          />
+
+
+          <Route 
+            path="/about" 
+            element={<About />} 
+          />
+
+
+          <Route 
+            path="/disclaimer" 
+            element={<Disclaimer />} 
+          />
+
+
+          <Route 
+            path="/return-policy" 
+            element={<ReturnPolicy />} 
+          />
+
+
+          <Route 
+            path="/login" 
+            element={<Login />} 
+          />
+
+
+          <Route 
+            path="/register" 
+            element={<Register />} 
+          />
+
+
+
+
 
           {/* ================= ADMIN ROUTES ================= */}
 
-          <Route path="/admin" element={<AdminDashboard />} />
+
+          <Route 
+            path="/admin" 
+            element={<AdminDashboard />} 
+          />
+
 
           <Route
             path="/admin/products"
             element={<AdminProducts />}
           />
 
+
           <Route
             path="/add-product"
             element={<AddProduct />}
           />
+
 
           <Route
             path="/admin/edit-product/:id"
             element={<EditProduct />}
           />
 
+
           <Route
             path="/admin/orders"
             element={<AdminOrders />}
           />
 
+
           <Route
             path="/admin/users"
             element={<AdminUsers />}
           />
+
+
         </Routes>
+
+
       </main>
 
+
       <Footer />
+
+
     </Router>
+
   );
+
 }
+
 
 export default App;

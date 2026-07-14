@@ -1,0 +1,984 @@
+/* =====================================================
+   SHOPNEST HOME PREMIUM UI
+===================================================== */
+
+
+/* =====================================================
+   HERO SECTION
+===================================================== */
+
+
+.home {
+
+  overflow:hidden;
+
+}
+
+
+
+.hero-section {
+
+
+  min-height:650px;
+
+
+  display:grid;
+
+
+  grid-template-columns:1fr 1fr;
+
+
+  align-items:center;
+
+
+  gap:60px;
+
+
+  padding:80px 7%;
+
+
+  background:
+
+
+  radial-gradient(
+  circle at top right,
+  #dbeafe,
+  transparent 40%
+  );
+
+
+}
+
+
+
+/* =====================================================
+   HERO LEFT
+===================================================== */
+
+
+.hero-tag {
+
+
+  display:inline-flex;
+
+
+  align-items:center;
+
+
+  gap:8px;
+
+
+  padding:10px 18px;
+
+
+  border-radius:50px;
+
+
+  background:#eff6ff;
+
+
+  color:#2563eb;
+
+
+  font-size:14px;
+
+
+  font-weight:800;
+
+
+  margin-bottom:25px;
+
+
+}
+
+
+
+.hero-tag svg {
+
+
+ color:#f59e0b;
+
+
+}
+
+
+
+
+
+.hero-left h1 {
+
+
+ font-size:65px;
+
+
+ line-height:1.1;
+
+
+ font-weight:950;
+
+
+ color:#0f172a;
+
+
+ letter-spacing:-2px;
+
+
+}
+
+
+
+.hero-left h1 span {
+
+
+ background:
+
+
+ linear-gradient(
+ 135deg,
+ #2563eb,
+ #60a5fa
+ );
+
+
+ -webkit-background-clip:text;
+
+
+ -webkit-text-fill-color:transparent;
+
+
+}
+
+
+
+.hero-left p {
+
+
+ margin:25px 0;
+
+
+ max-width:550px;
+
+
+ font-size:18px;
+
+
+ line-height:1.8;
+
+
+ color:#64748b;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+
+.hero-buttons {
+
+
+ display:flex;
+
+
+ gap:18px;
+
+
+ margin-top:35px;
+
+
+}
+
+
+
+.primary-btn,
+.secondary-btn {
+
+
+ display:flex;
+
+
+ align-items:center;
+
+
+ justify-content:center;
+
+
+ gap:10px;
+
+
+ padding:16px 28px;
+
+
+ border-radius:16px;
+
+
+ text-decoration:none;
+
+
+ font-weight:800;
+
+
+ transition:.35s;
+
+
+}
+
+
+
+.primary-btn {
+
+
+ background:
+
+
+ linear-gradient(
+ 135deg,
+ #2563eb,
+ #3b82f6
+ );
+
+
+ color:white;
+
+
+ box-shadow:
+
+
+ 0 15px 30px rgba(37,99,235,.3);
+
+
+}
+
+
+
+.primary-btn:hover {
+
+
+ transform:translateY(-5px);
+
+
+}
+
+
+
+
+.secondary-btn {
+
+
+ border:2px solid #2563eb;
+
+
+ color:#2563eb;
+
+
+}
+
+
+
+.secondary-btn:hover {
+
+
+ background:#2563eb;
+
+
+ color:white;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   HERO STATS
+===================================================== */
+
+
+.hero-stats {
+
+
+ display:flex;
+
+
+ gap:45px;
+
+
+ margin-top:50px;
+
+
+}
+
+
+
+.hero-stats h2 {
+
+
+ font-size:32px;
+
+
+ font-weight:900;
+
+
+ margin:0;
+
+
+ color:#0f172a;
+
+
+}
+
+
+
+.hero-stats span {
+
+
+ color:#64748b;
+
+
+ font-weight:600;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   HERO RIGHT
+===================================================== */
+
+
+.hero-right {
+
+
+ position:relative;
+
+
+ height:500px;
+
+
+ display:flex;
+
+
+ justify-content:center;
+
+
+ align-items:center;
+
+
+}
+
+
+
+.hero-circle {
+
+
+ position:absolute;
+
+
+ width:380px;
+
+
+ height:380px;
+
+
+ border-radius:50%;
+
+
+ background:
+
+
+ linear-gradient(
+ 135deg,
+ #2563eb,
+ #93c5fd
+ );
+
+
+ filter:blur(2px);
+
+
+}
+
+
+
+
+
+/* =====================================================
+   GLASS CARDS
+===================================================== */
+
+
+.glass-card {
+
+
+ position:absolute;
+
+
+ width:190px;
+
+
+ padding:25px;
+
+
+ background:
+
+
+ rgba(255,255,255,.75);
+
+
+ backdrop-filter:blur(15px);
+
+
+ border-radius:25px;
+
+
+ box-shadow:
+
+
+ 0 25px 50px rgba(15,23,42,.15);
+
+
+ animation:float 4s infinite ease-in-out;
+
+
+}
+
+
+
+.card1 {
+
+
+ top:80px;
+
+
+ left:40px;
+
+
+}
+
+
+
+.card2 {
+
+
+ bottom:90px;
+
+
+ left:80px;
+
+
+ animation-delay:1s;
+
+
+}
+
+
+
+.card3 {
+
+
+ top:170px;
+
+
+ right:20px;
+
+
+ animation-delay:2s;
+
+
+}
+
+
+
+.glass-icon {
+
+
+ width:50px;
+
+
+ height:50px;
+
+
+ display:flex;
+
+
+ align-items:center;
+
+
+ justify-content:center;
+
+
+ border-radius:15px;
+
+
+ background:#eff6ff;
+
+
+ color:#2563eb;
+
+
+ font-size:25px;
+
+
+ margin-bottom:15px;
+
+
+}
+
+
+
+.glass-card h3 {
+
+
+ margin:0;
+
+
+ font-size:20px;
+
+
+}
+
+
+
+.glass-card p {
+
+
+ margin-top:8px;
+
+
+ color:#64748b;
+
+
+}
+
+
+
+
+
+@keyframes float {
+
+
+ 0%,100%{
+
+
+ transform:translateY(0);
+
+
+ }
+
+
+ 50%{
+
+
+ transform:translateY(-15px);
+
+
+ }
+
+
+}
+
+
+
+
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+
+.features {
+
+
+ display:grid;
+
+
+ grid-template-columns:
+
+ repeat(3,1fr);
+
+
+ gap:25px;
+
+
+ padding:60px 7%;
+
+
+}
+
+
+
+.feature-card {
+
+
+ padding:35px;
+
+
+ background:white;
+
+
+ border-radius:25px;
+
+
+ border:1px solid #e2e8f0;
+
+
+ box-shadow:
+
+
+ 0 15px 35px rgba(15,23,42,.06);
+
+
+ transition:.35s;
+
+
+}
+
+
+
+.feature-card:hover {
+
+
+ transform:translateY(-8px);
+
+
+ box-shadow:
+
+
+ 0 25px 50px rgba(37,99,235,.15);
+
+
+}
+
+
+
+.feature-card svg {
+
+
+ font-size:35px;
+
+
+ color:#2563eb;
+
+
+}
+
+
+
+.feature-card h3 {
+
+
+ margin:20px 0 10px;
+
+
+ font-size:22px;
+
+
+}
+
+
+
+.feature-card p {
+
+
+ color:#64748b;
+
+
+ line-height:1.7;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   FEATURED PRODUCTS
+===================================================== */
+
+
+.featured-products {
+
+
+ padding:70px 7%;
+
+
+}
+
+
+
+.section-heading {
+
+
+ display:flex;
+
+
+ justify-content:space-between;
+
+
+ align-items:center;
+
+
+ margin-bottom:35px;
+
+
+}
+
+
+
+.section-tag {
+
+
+ color:#2563eb;
+
+
+ font-weight:800;
+
+
+}
+
+
+
+.section-heading h2 {
+
+
+ font-size:38px;
+
+
+ margin-top:10px;
+
+
+ color:#0f172a;
+
+
+}
+
+
+
+.view-all-btn {
+
+
+ display:flex;
+
+
+ align-items:center;
+
+
+ gap:8px;
+
+
+ text-decoration:none;
+
+
+ color:#2563eb;
+
+
+ font-weight:800;
+
+
+}
+
+
+
+
+.loading-state {
+
+
+ text-align:center;
+
+
+ padding:60px;
+
+
+ color:#64748b;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+
+@media(max-width:950px){
+
+
+.hero-section {
+
+
+ grid-template-columns:1fr;
+
+
+ text-align:center;
+
+
+}
+
+
+
+.hero-left p {
+
+
+ margin-left:auto;
+
+
+ margin-right:auto;
+
+
+}
+
+
+
+.hero-buttons {
+
+
+ justify-content:center;
+
+
+}
+
+
+
+.hero-stats {
+
+
+ justify-content:center;
+
+
+}
+
+
+
+.features {
+
+
+ grid-template-columns:1fr;
+
+
+}
+
+
+
+.hero-right {
+
+
+ margin-top:30px;
+
+
+}
+
+
+
+}
+
+
+
+
+@media(max-width:600px){
+
+
+.hero-left h1 {
+
+
+ font-size:42px;
+
+
+}
+
+
+
+.hero-buttons {
+
+
+ flex-direction:column;
+
+
+}
+
+
+
+.hero-stats {
+
+
+ gap:20px;
+
+
+}
+
+
+
+.hero-stats h2 {
+
+
+ font-size:25px;
+
+
+}
+
+
+
+.hero-circle {
+
+
+ width:280px;
+
+
+ height:280px;
+
+
+}
+
+
+
+.glass-card {
+
+
+ width:150px;
+
+
+ padding:18px;
+
+
+}
+
+
+
+.section-heading {
+
+
+ flex-direction:column;
+
+
+ align-items:flex-start;
+
+
+ gap:20px;
+
+
+}
+
+
+
+.section-heading h2 {
+
+
+ font-size:30px;
+
+
+}
+
+
+}

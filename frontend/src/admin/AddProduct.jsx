@@ -1,144 +1,661 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { FiUploadCloud, FiPackage } from "react-icons/fi";
+import { toast } from "react-toastify";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+import "../styles/addproduct.css";
+
+
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+
 
 const AddProduct = () => {
+
+
   const { user } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    category: "",
-    brand: "",
-    stock: "",
+
+
+
+  const [formData,setFormData] = useState({
+
+    name:"",
+    description:"",
+    price:"",
+    category:"",
+    brand:"",
+    stock:"",
+
   });
 
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!user || user.role !== "admin") {
+
+  const [image,setImage] = useState(null);
+
+  const [preview,setPreview] = useState(null);
+
+  const [loading,setLoading] = useState(false);
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    if(!user || user.role !== "admin"){
+
       navigate("/");
-    }
-  }, [user, navigate]);
 
-  const handleChange = (e) => {
+    }
+
+
+  },[user,navigate]);
+
+
+
+
+
+
+
+
+
+  const handleChange=(e)=>{
+
+
     setFormData({
+
       ...formData,
-      [e.target.name]: e.target.value,
+
+      [e.target.name]:e.target.value,
+
     });
+
+
   };
 
-  const handleSubmit = async (e) => {
+
+
+
+
+
+
+
+
+  const handleImage=(e)=>{
+
+
+    const file=e.target.files[0];
+
+
+    setImage(file);
+
+
+
+    if(file){
+
+      setPreview(
+
+        URL.createObjectURL(file)
+
+      );
+
+    }
+
+
+  };
+
+
+
+
+
+
+
+
+
+  const handleSubmit=async(e)=>{
+
+
     e.preventDefault();
 
-    console.log("🚀 Submit clicked");
 
-    if (!image) {
-      alert("Please select an image");
+
+
+    if(!image){
+
+
+      toast.error(
+
+        "Please select an image"
+
+      );
+
+
       return;
+
+
     }
+
+
+
+
+
 
     setLoading(true);
 
-    try {
+
+
+
+
+
+    try{
+
+
+
       const data = new FormData();
 
-      data.append("name", formData.name);
-      data.append("description", formData.description);
-      data.append("price", formData.price);
-      data.append("category", formData.category);
-      data.append("brand", formData.brand);
-      data.append("stock", formData.stock);
-      data.append("image", image);
 
-      console.log("📦 Sending request to:", `${API_URL}/api/products`);
 
-      const res = await fetch(`${API_URL}/api/products`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: data,
+
+
+      Object.keys(formData).forEach((key)=>{
+
+
+        data.append(
+
+          key,
+
+          formData[key]
+
+        );
+
+
       });
+
+
+
+
+
+      data.append(
+
+        "image",
+
+        image
+
+      );
+
+
+
+
+
+
+
+
+
+      const res = await fetch(
+
+        `${API_URL}/api/products`,
+
+        {
+
+
+          method:"POST",
+
+
+          headers:{
+
+
+            Authorization:
+
+            `Bearer ${user.token}`,
+
+
+
+          },
+
+
+          body:data,
+
+
+        }
+
+
+      );
+
+
+
+
+
+
+
+
 
       const result = await res.json();
 
-      console.log("📥 RESPONSE STATUS:", res.status);
-      console.log("📥 RESPONSE DATA:", result);
 
-      if (!res.ok) {
-        alert(result.message || "Failed to create product");
+
+
+
+
+
+
+
+      if(!res.ok){
+
+
+
+        toast.error(
+
+          result.message ||
+
+          "Failed to create product"
+
+        );
+
+
+
         return;
+
+
+
       }
 
-      alert("Product created successfully 🚀");
+
+
+
+
+
+
+
+      toast.success(
+
+        "Product created successfully 🚀"
+
+      );
+
+
 
       navigate("/shop");
-    } catch (err) {
-      console.error("❌ ERROR:", err);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
+
+
+
+
+
+
+
     }
+
+
+
+    catch(err){
+
+
+
+      console.log(err);
+
+
+
+      toast.error(
+
+        "Something went wrong"
+
+      );
+
+
+
+    }
+
+
+
+    finally{
+
+
+      setLoading(false);
+
+
+    }
+
+
   };
 
+
+
+
+
+
+
+
+
+
+
   return (
-    <div style={containerStyle}>
-      <h2 style={{ color: "#f97316" }}>Add New Product</h2>
 
-      <form onSubmit={handleSubmit} style={formStyle}>
-        <input name="name" placeholder="Product Name" onChange={handleChange} required style={inputStyle} />
 
-        <textarea name="description" placeholder="Description" onChange={handleChange} required style={inputStyle} />
+    <div className="add-product-container">
 
-        <input name="price" type="number" placeholder="Price" onChange={handleChange} required style={inputStyle} />
 
-        <input name="category" placeholder="Category" onChange={handleChange} required style={inputStyle} />
+      <div className="add-product-card">
 
-        <input name="brand" placeholder="Brand" onChange={handleChange} required style={inputStyle} />
 
-        <input name="stock" type="number" placeholder="Stock" onChange={handleChange} required style={inputStyle} />
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          required
-        />
+        <div className="admin-heading">
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Uploading..." : "Add Product"}
-        </button>
-      </form>
+
+          <FiPackage />
+
+
+          <h1>
+            Add New Product
+          </h1>
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <form
+
+          onSubmit={handleSubmit}
+
+          className="product-form"
+
+        >
+
+
+
+
+
+
+          <input
+
+            name="name"
+
+            placeholder="Product Name"
+
+            value={formData.name}
+
+            onChange={handleChange}
+
+            required
+
+          />
+
+
+
+
+
+
+
+          <textarea
+
+            name="description"
+
+            placeholder="Product Description"
+
+            value={formData.description}
+
+            onChange={handleChange}
+
+            required
+
+          />
+
+
+
+
+
+
+
+
+
+          <div className="form-grid">
+
+
+
+            <input
+
+              name="price"
+
+              type="number"
+
+              placeholder="Price"
+
+              value={formData.price}
+
+              onChange={handleChange}
+
+              required
+
+            />
+
+
+
+
+
+            <input
+
+              name="stock"
+
+              type="number"
+
+              placeholder="Stock"
+
+              value={formData.stock}
+
+              onChange={handleChange}
+
+              required
+
+            />
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          <div className="form-grid">
+
+
+
+            <input
+
+              name="category"
+
+              placeholder="Category"
+
+              value={formData.category}
+
+              onChange={handleChange}
+
+              required
+
+            />
+
+
+
+
+
+
+
+            <input
+
+              name="brand"
+
+              placeholder="Brand"
+
+              value={formData.brand}
+
+              onChange={handleChange}
+
+              required
+
+            />
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          <label className="upload-box">
+
+
+
+            <FiUploadCloud />
+
+
+
+            <span>
+
+
+              {
+
+                image
+
+                ?
+
+                image.name
+
+                :
+
+                "Upload Product Image"
+
+
+              }
+
+
+            </span>
+
+
+
+
+
+            <input
+
+              type="file"
+
+              accept="image/*"
+
+              onChange={handleImage}
+
+            />
+
+
+
+          </label>
+
+
+
+
+
+
+
+
+
+          {
+
+            preview && (
+
+
+              <img
+
+                src={preview}
+
+                className="image-preview"
+
+                alt="preview"
+
+              />
+
+
+            )
+
+          }
+
+
+
+
+
+
+
+
+
+          <button
+
+
+            disabled={loading}
+
+            className="add-product-btn"
+
+
+          >
+
+
+
+            {
+
+              loading
+
+              ?
+
+              "Uploading..."
+
+              :
+
+              "Add Product"
+
+
+            }
+
+
+
+          </button>
+
+
+
+
+
+
+        </form>
+
+
+
+
+
+      </div>
+
+
     </div>
+
+
   );
+
+
 };
 
-const containerStyle = {
-  maxWidth: "600px",
-  margin: "40px auto",
-  background: "#18181b",
-  padding: "30px",
-  borderRadius: "10px",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-};
-
-const inputStyle = {
-  padding: "12px",
-  background: "#09090b",
-  color: "#fff",
-  border: "1px solid #333",
-  borderRadius: "6px",
-};
 
 export default AddProduct;

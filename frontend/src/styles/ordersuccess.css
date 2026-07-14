@@ -1,0 +1,357 @@
+/* =====================================================
+   SHOPNEST ORDER SUCCESS PAGE
+===================================================== */
+
+
+.success-container {
+
+
+  min-height:80vh;
+
+
+  display:flex;
+
+
+  justify-content:center;
+
+
+  align-items:center;
+
+
+  padding:40px 20px;
+
+
+  background:
+
+
+  radial-gradient(
+  circle at top,
+  #dbeafe,
+  transparent 45%
+  );
+
+
+}
+
+
+
+
+
+.success-card {
+
+
+  width:100%;
+
+
+  max-width:600px;
+
+
+  text-align:center;
+
+
+  padding:55px 45px;
+
+
+  background:white;
+
+
+  border-radius:32px;
+
+
+  border:1px solid #e2e8f0;
+
+
+  box-shadow:
+
+
+  0 30px 70px rgba(15,23,42,.12);
+
+
+}
+
+
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+
+.success-icon {
+
+
+  width:100px;
+
+
+  height:100px;
+
+
+  margin:auto;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  justify-content:center;
+
+
+  border-radius:50%;
+
+
+  background:#dcfce7;
+
+
+  color:#16a34a;
+
+
+  font-size:70px;
+
+
+  animation:successPop .5s ease;
+
+
+}
+
+
+
+
+@keyframes successPop {
+
+
+  0%{
+
+
+    transform:scale(0);
+
+
+  }
+
+
+  100%{
+
+
+    transform:scale(1);
+
+
+  }
+
+
+}
+
+
+
+
+
+
+.success-card h1 {
+
+
+  margin:30px 0 15px;
+
+
+  font-size:38px;
+
+
+  font-weight:950;
+
+
+  color:#0f172a;
+
+
+}
+
+
+
+
+
+.success-card p {
+
+
+  color:#64748b;
+
+
+  line-height:1.8;
+
+
+  font-size:17px;
+
+
+}
+
+
+
+
+
+.success-card strong {
+
+
+  color:#2563eb;
+
+
+}
+
+
+
+
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+
+.success-buttons {
+
+
+  display:flex;
+
+
+  flex-direction:column;
+
+
+  gap:15px;
+
+
+  margin-top:35px;
+
+
+}
+
+
+
+
+
+.success-btn {
+
+
+  padding:16px;
+
+
+  border-radius:16px;
+
+
+  text-decoration:none;
+
+
+  font-weight:900;
+
+
+  transition:.35s;
+
+
+}
+
+
+
+
+
+.primary-success {
+
+
+  background:
+
+
+  linear-gradient(
+ 135deg,
+ #2563eb,
+ #60a5fa
+ );
+
+
+  color:white;
+
+
+}
+
+
+
+
+.secondary-success {
+
+
+  border:2px solid #2563eb;
+
+
+  color:#2563eb;
+
+
+}
+
+
+
+
+.primary-success:hover,
+.secondary-success:hover {
+
+
+  transform:translateY(-5px);
+
+
+}
+
+
+
+
+
+.secondary-success:hover {
+
+
+  background:#2563eb;
+
+
+  color:white;
+
+
+}
+
+
+
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+
+@media(max-width:600px){
+
+
+.success-card {
+
+
+ padding:40px 25px;
+
+
+}
+
+
+
+.success-card h1 {
+
+
+ font-size:30px;
+
+
+}
+
+
+
+.success-icon {
+
+
+ width:80px;
+
+
+ height:80px;
+
+
+ font-size:55px;
+
+
+}
+
+
+}

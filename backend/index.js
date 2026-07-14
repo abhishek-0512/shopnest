@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const path = require("path");
 
 dotenv.config();
 
@@ -14,10 +13,9 @@ const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 
-// Initialize Express
 const app = express();
 
-// Connect Database
+// DB connection
 connectDB();
 
 // ==============================
@@ -37,13 +35,6 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// ==============================
-// Static Folder (Only if needed)
-// ==============================
-
-// Multer temporary uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ==============================
 // Health Check
@@ -100,6 +91,5 @@ app.listen(PORT, () => {
   console.log("=======================================");
   console.log(`🚀 ShopNest Backend Running`);
   console.log(`🌍 Server : http://localhost:${PORT}`);
-  console.log(`📂 Uploads: http://localhost:${PORT}/uploads`);
   console.log("=======================================");
 });

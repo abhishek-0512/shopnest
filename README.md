@@ -1,39 +1,90 @@
-# ShopNest 🛒
+# 🛒 ShopNest - MERN Stack E-Commerce Platform
 
-ShopNest is an e-commerce web application where users can browse products, add items to their cart, and complete purchases with a smooth shopping experience.
+ShopNest is a full-stack e-commerce web application built using the MERN stack.
 
-## Features
-- Browse products (sunscreen, sunglasses, water bottles, headphones, etc.)
-- Add to cart functionality
-- [Add other features: login/signup, checkout, search, filters, etc.]
+It provides a complete shopping experience with authentication, product management, cart, wishlist, orders, and admin functionalities.
 
-## Tech Stack
-- [Frontend: e.g., HTML, CSS, JavaScript / React]
-- [Backend: e.g., Node.js, Express — if applicable]
-- [Database: e.g., MongoDB — if applicable]
+---
 
-## Live Demo
-🔗 [https://shopnest.vercel.app](https://shopnest.vercel.app)
+# 🚀 Live Demo
 
-## Getting Started
+## Frontend
 
-### Prerequisites
-- Node.js installed (if applicable)
+Coming soon...
 
-### Installation
-\`\`\`bash
-git clone https://github.com/abhishek-0512/shopnest.git
-cd shopnest
-npm install
-npm start
-\`\`\`
+## Backend API
 
-## Screenshots
-[Add screenshots of your app here]
+https://shopnest-gz0z.onrender.com
 
-## Author
-**Abhishek**
-GitHub: [@abhishek-0512](https://github.com/abhishek-0512)
+---
 
-## License
-This project is open source and available under the [MIT License](LICENSE).
+# ✨ Features
+
+## 👤 User Features
+
+- User registration and login
+- JWT authentication
+- Protected routes
+- Browse products
+- Search products
+- Category filtering
+- Product sorting
+- Product details page
+- Add to cart
+- Update cart quantity
+- Remove cart items
+- Wishlist system
+- Checkout
+- Order placement
+- View orders
+- Responsive UI
+
+
+---
+
+## 👨‍💼 Admin Features
+
+- Admin dashboard
+- Add products
+- Edit products
+- Delete products
+- Manage products
+- Manage orders
+- View users
+
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- React.js
+- Vite
+- Redux Toolkit
+- React Router DOM
+- React Toastify
+- CSS3
+
+
+## Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- Multer
+
+
+## Cloud Services
+
+- MongoDB Atlas
+- Cloudinary
+- Render
+- Vercel
+
+
+---
+
+# 📂 Project Structure

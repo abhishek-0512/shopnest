@@ -3,422 +3,947 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { clearCart } from "../redux/cartSlice";
-import "../styles/cart.css";
+import { toast } from "react-toastify";
+
+import "../styles/checkout.css";
+
+
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+
+const getImageSrc = (imageUrl) => {
+
+  if (!imageUrl)
+    return "/placeholder.png";
+
+
+  return imageUrl.startsWith("http")
+    ? imageUrl
+    : `${API_URL}${imageUrl}`;
+
+};
+
+
 
 const Checkout = () => {
+
+
   const { user } = useContext(AuthContext);
+
   const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
-  const cartItems = useSelector((state) => state.cart.cartItems);
+
+
+  const cartItems = useSelector(
+    (state) => state.cart.cartItems
+  );
+
+
 
   const [loading, setLoading] = useState(false);
 
+
+
   const [address, setAddress] = useState({
-    fullName: "",
+
+    fullName: user?.name || "",
+
     phone: "",
+
     street: "",
+
     city: "",
+
     state: "",
+
     postalCode: "",
+
     country: "India",
+
   });
 
+
+
+
+
+
+
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.qty,
+    (total, item) =>
+      total + Number(item.price) * item.qty,
     0
   );
 
-  const deliveryCharge = subtotal > 999 ? 0 : 99;
 
-  const gst = Math.round(subtotal * 0.18);
 
-  const grandTotal = subtotal + deliveryCharge + gst;
+  const deliveryCharge =
+    subtotal > 999 ? 0 : 99;
+
+
+
+  const gst =
+    Math.round(subtotal * 0.18);
+
+
+
+  const grandTotal =
+    subtotal + deliveryCharge + gst;
+
+
+
+
+
+
 
   const handleChange = (e) => {
+
     setAddress({
+
       ...address,
+
       [e.target.name]: e.target.value,
+
     });
+
   };
 
+
+
+
+
+
+
+
+  const validateAddress = () => {
+
+
+    if (
+      !address.fullName ||
+      !address.phone ||
+      !address.street ||
+      !address.city ||
+      !address.state ||
+      !address.postalCode
+    ) {
+
+      toast.error(
+        "Please complete shipping address"
+      );
+
+      return false;
+
+    }
+
+
+
+    if(address.phone.length !== 10){
+
+      toast.error(
+        "Enter valid mobile number"
+      );
+
+      return false;
+
+    }
+
+
+
+    if(address.postalCode.length !== 6){
+
+      toast.error(
+        "Enter valid pincode"
+      );
+
+      return false;
+
+    }
+
+
+    return true;
+
+  };
+
+
+
+
+
+
+
+
+
   const handlePayment = async () => {
+
+
+    if(loading)
+      return;
+
+
+
     try {
-      if (!user) {
-        alert("Please login first");
+
+
+
+      if(!user){
+
+        toast.warning(
+          "Please login first"
+        );
+
         navigate("/login");
+
         return;
+
       }
 
-      if (cartItems.length === 0) {
-        alert("Your cart is empty");
+
+
+
+      if(cartItems.length === 0){
+
+        toast.warning(
+          "Your cart is empty"
+        );
+
         return;
+
       }
 
-      if (
-        !address.fullName ||
-        !address.phone ||
-        !address.street ||
-        !address.city ||
-        !address.state ||
-        !address.postalCode
-      ) {
-        alert("Please fill complete shipping address.");
+
+
+
+
+      if(!validateAddress())
         return;
+
+
+
+
+
+
+      if(!window.Razorpay){
+
+        toast.error(
+          "Payment gateway not loaded"
+        );
+
+        return;
+
       }
 
-      if (!window.Razorpay) {
-        alert("Razorpay SDK not loaded.");
-        return;
-      }
+
+
+
+
 
       setLoading(true);
 
+
+
+
+
+
+      // CREATE RAZORPAY ORDER
+
       const orderResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/payment/create-order`,
+
+        `${API_URL}/api/payment/create-order`,
+
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+
+          method:"POST",
+
+          headers:{
+
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${user.token}`,
+
           },
-          body: JSON.stringify({
-            amount: grandTotal,
+
+
+          body:JSON.stringify({
+
+            amount:grandTotal,
+
           }),
+
+
         }
+
       );
 
-      const orderData = await orderResponse.json();
 
-      if (!orderResponse.ok) {
-        alert(orderData.message || "Unable to create order");
+
+
+
+
+
+      const orderData =
+        await orderResponse.json();
+
+
+
+
+
+      if(!orderResponse.ok){
+
+        toast.error(
+          orderData.message ||
+          "Unable to create payment order"
+        );
+
         setLoading(false);
+
         return;
+
       }
 
+
+
+
+
+
+
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
 
-        amount: orderData.amount,
 
-        currency: orderData.currency,
+        key:
+          import.meta.env.VITE_RAZORPAY_KEY,
 
-        order_id: orderData.id,
 
-        name: "ShopNest",
+        amount:
+          orderData.amount,
 
-        description: "ShopNest Order Payment",
 
-        prefill: {
-          name: address.fullName,
-          email: user.email,
-          contact: address.phone,
+        currency:
+          orderData.currency,
+
+
+        order_id:
+          orderData.id,
+
+
+
+        name:
+          "ShopNest",
+
+
+
+        description:
+          "ShopNest Order Payment",
+
+
+
+
+
+        prefill:{
+
+
+          name:
+            address.fullName,
+
+
+          email:
+            user.email,
+
+
+          contact:
+            address.phone,
+
+
         },
 
-        notes: {
-          address: `${address.street}, ${address.city}`,
+
+
+
+
+        notes:{
+
+
+          address:
+            `${address.street}, ${address.city}`,
+
         },
 
-        theme: {
-          color: "#f97316",
+
+
+
+
+        theme:{
+
+
+          color:"#2563eb",
+
+
         },
 
-        handler: async function (response) {
-          try {
-            const verifyRes = await fetch(
-              `${import.meta.env.VITE_API_URL}/api/payment/verify`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${user.token}`,
-                },
-                body: JSON.stringify(response),
-              }
-            );
 
-            const verifyData = await verifyRes.json();
 
-            if (!verifyData.success) {
-              alert("Payment verification failed");
+
+
+
+
+        handler: async(response)=>{
+
+
+          try{
+
+
+
+            // VERIFY PAYMENT
+
+
+            const verifyRes =
+              await fetch(
+
+                `${API_URL}/api/payment/verify`,
+
+                {
+
+                  method:"POST",
+
+                  headers:{
+
+                    "Content-Type":
+                      "application/json",
+
+                    Authorization:
+                      `Bearer ${user.token}`,
+
+                  },
+
+
+                  body:
+
+                    JSON.stringify(response),
+
+                }
+
+              );
+
+
+
+
+
+
+            const verifyData =
+              await verifyRes.json();
+
+
+
+
+
+
+
+            if(!verifyData.success){
+
+
+              toast.error(
+                "Payment verification failed"
+              );
+
+
               setLoading(false);
+
               return;
+
+
             }
 
-            const saveOrder = await fetch(
-              `${import.meta.env.VITE_API_URL}/api/orders`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${user.token}`,
-                },
-                body: JSON.stringify({
-                  items: cartItems,
 
-                  shippingAddress: address,
 
-                  totalAmount: grandTotal,
 
-                  paymentStatus: "Paid",
 
-                  razorpay_order_id:
-                    response.razorpay_order_id,
 
-                  razorpay_payment_id:
-                    response.razorpay_payment_id,
 
-                  razorpay_signature:
-                    response.razorpay_signature,
-                }),
-              }
-            );
 
-            const result = await saveOrder.json();
+            // SAVE ORDER
 
-            if (!saveOrder.ok) {
-              alert(result.message || "Order saving failed");
+
+            const saveOrder =
+              await fetch(
+
+                `${API_URL}/api/orders`,
+
+                {
+
+
+                  method:"POST",
+
+
+                  headers:{
+
+
+                    "Content-Type":
+                      "application/json",
+
+
+                    Authorization:
+                      `Bearer ${user.token}`,
+
+                  },
+
+
+
+                  body:JSON.stringify({
+
+
+                    items:cartItems,
+
+
+                    shippingAddress:address,
+
+
+                    totalAmount:grandTotal,
+
+
+                    paymentStatus:"Paid",
+
+
+                    razorpay_order_id:
+                      response.razorpay_order_id,
+
+
+                    razorpay_payment_id:
+                      response.razorpay_payment_id,
+
+
+                    razorpay_signature:
+                      response.razorpay_signature,
+
+
+                  }),
+
+
+                }
+
+              );
+
+
+
+
+
+
+            const result =
+              await saveOrder.json();
+
+
+
+
+
+
+            if(!saveOrder.ok){
+
+
+              toast.error(
+                result.message ||
+                "Order saving failed"
+              );
+
+
               setLoading(false);
+
               return;
+
+
             }
+
+
+
+
+
+
 
             dispatch(clearCart());
 
-            alert("Order Placed Successfully 🎉");
+
+
+            toast.success(
+              "Order placed successfully 🎉"
+            );
+
+
 
             navigate("/ordersuccess");
-          } catch (err) {
-            console.log(err);
-            alert("Something went wrong while saving the order.");
+
+
+
           }
 
-          setLoading(false);
+
+          catch(error){
+
+
+            console.log(error);
+
+
+            toast.error(
+              "Something went wrong"
+            );
+
+
+          }
+
+
+          finally{
+
+            setLoading(false);
+
+          }
+
+
+
         },
+
+
+
+
       };
 
-      const razorpay = new window.Razorpay(options);
+
+
+
+
+
+
+      const razorpay =
+        new window.Razorpay(options);
+
+
+
+
+
+      razorpay.on(
+        "payment.failed",
+        ()=>{
+
+          toast.error(
+            "Payment failed"
+          );
+
+          setLoading(false);
+
+        }
+      );
+
+
+
+
 
       razorpay.open();
-    } catch (err) {
-      console.log(err);
-      alert("Payment Failed");
-      setLoading(false);
+
+
+
+
     }
+
+
+
+    catch(error){
+
+
+      console.log(error);
+
+
+      toast.error(
+        "Payment failed"
+      );
+
+
+      setLoading(false);
+
+
+    }
+
+
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handlePayment();
-  };
-    return (
+
+
+
+
+
+
+
+
+  return (
+
     <div className="checkout-container">
-      <h2>Checkout</h2>
 
-      <div className="cart-layout">
 
-        {/* LEFT SIDE */}
+      <h1 className="checkout-title">
+        Checkout
+      </h1>
 
-        <div className="checkout-content">
-          <form className="shipping-form" onSubmit={handleSubmit}>
-            <h3>Shipping Address</h3>
 
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={address.fullName}
-              onChange={handleChange}
-              required
-            />
 
-            <input
-              type="text"
-              name="phone"
-              placeholder="Mobile Number"
-              value={address.phone}
-              onChange={handleChange}
-              required
-            />
 
-            <input
-              type="text"
-              name="street"
-              placeholder="Street Address"
-              value={address.street}
-              onChange={handleChange}
-              required
-            />
 
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={address.city}
-              onChange={handleChange}
-              required
-            />
+      <div className="checkout-layout">
 
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              value={address.state}
-              onChange={handleChange}
-              required
-            />
 
-            <input
-              type="text"
-              name="postalCode"
-              placeholder="Pincode"
-              value={address.postalCode}
-              onChange={handleChange}
-              required
-            />
 
-            <input
-              type="text"
-              name="country"
-              placeholder="Country"
-              value={address.country}
-              onChange={handleChange}
-              required
-            />
-          </form>
-        </div>
+        {/* ADDRESS */}
 
-        {/* RIGHT SIDE */}
 
-        <div className="cart-summary">
+        <div className="checkout-card">
 
-          <h3>Order Summary</h3>
 
-          {cartItems.map((item) => {
-
-            const imageSrc = item.imageUrl?.startsWith("http")
-              ? item.imageUrl
-              : `${import.meta.env.VITE_API_URL}${item.imageUrl}`;
-
-            return (
-              <div
-                key={item.productId}
-                className="cart-item"
-                style={{
-                  marginBottom: "15px",
-                  padding: "10px",
-                }}
-              >
-                <img
-                  src={imageSrc}
-                  alt={item.name}
-                  className="cart-item-image"
-                  onError={(e) => {
-                    e.target.src = "/placeholder.png";
-                  }}
-                />
-
-                <div className="cart-item-details">
-                  <h4>{item.name}</h4>
-
-                  <p>
-                    Qty : <strong>{item.qty}</strong>
-                  </p>
-
-                  <p>
-                    ₹{Number(item.price).toLocaleString("en-IN")}
-                  </p>
-
-                  <p
-                    style={{
-                      color: "#f97316",
-                      fontWeight: "600",
-                    }}
-                  >
-                    ₹
-                    {Number(item.price * item.qty).toLocaleString("en-IN")}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-
-          <hr />
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "15px",
-            }}
-          >
-            <span>Subtotal</span>
-
-            <span>
-              ₹{subtotal.toLocaleString("en-IN")}
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "10px",
-            }}
-          >
-            <span>Delivery</span>
-
-            <span>
-              {deliveryCharge === 0
-                ? "FREE"
-                : `₹${deliveryCharge}`}
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "10px",
-            }}
-          >
-            <span>GST (18%)</span>
-
-            <span>
-              ₹{gst.toLocaleString("en-IN")}
-            </span>
-          </div>
-
-          <hr />
-
-          <h2
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "20px",
-              color: "#f97316",
-            }}
-          >
-            <span>Total</span>
-
-            <span>
-              ₹{grandTotal.toLocaleString("en-IN")}
-            </span>
+          <h2>
+            Shipping Address
           </h2>
 
-          <button
-            type="button"
-            className="btn btn-checkout"
-            disabled={loading}
-            onClick={handlePayment}
-          >
-            {loading
-              ? "Processing Payment..."
-              : `Pay ₹${grandTotal.toLocaleString("en-IN")}`}
-          </button>
+
+
+          <div className="input-grid">
+
+
+            {
+              Object.keys(address).map((field)=>(
+
+                <input
+
+                  key={field}
+
+                  name={field}
+
+                  value={address[field]}
+
+                  placeholder={
+                    field
+                    .replace(
+                      /([A-Z])/g,
+                      " $1"
+                    )
+                    .replace(
+                      /^./,
+                      str=>str.toUpperCase()
+                    )
+                  }
+
+                  onChange={handleChange}
+
+                  required
+
+                />
+
+
+              ))
+
+            }
+
+
+          </div>
+
+
         </div>
+
+
+
+
+
+
+
+
+
+        {/* SUMMARY */}
+
+
+        <div className="checkout-summary">
+
+
+          <h2>
+            Order Summary
+          </h2>
+
+
+
+
+          {
+            cartItems.map((item)=>(
+
+
+              <div
+                className="checkout-product"
+                key={item.productId}
+              >
+
+
+                <img
+
+                  src={
+                    getImageSrc(
+                      item.imageUrl
+                    )
+                  }
+
+                  alt={item.name}
+
+                  className="checkout-product-image"
+
+                  onError={(e)=>{
+
+                    e.target.src =
+                    "/placeholder.png";
+
+                  }}
+
+                />
+
+
+                <div>
+
+                  <h4>
+                    {item.name}
+                  </h4>
+
+
+                  <p>
+                    Qty: {item.qty}
+                  </p>
+
+
+                  <strong>
+                    ₹
+                    {
+                      (
+                        item.price *
+                        item.qty
+                      )
+                      .toLocaleString("en-IN")
+                    }
+                  </strong>
+
+
+                </div>
+
+
+              </div>
+
+
+            ))
+
+          }
+
+
+
+
+
+
+          <div className="checkout-row">
+
+            <span>
+              Subtotal
+            </span>
+
+            <b>
+              ₹{subtotal.toLocaleString("en-IN")}
+            </b>
+
+          </div>
+
+
+
+
+
+          <div className="checkout-row">
+
+            <span>
+              Delivery
+            </span>
+
+            <b>
+              {
+                deliveryCharge===0
+                ?"FREE"
+                :`₹${deliveryCharge}`
+              }
+            </b>
+
+          </div>
+
+
+
+
+
+
+          <div className="checkout-row">
+
+            <span>
+              GST (18%)
+            </span>
+
+            <b>
+              ₹{gst.toLocaleString("en-IN")}
+            </b>
+
+          </div>
+
+
+
+
+
+
+
+          <div className="checkout-total">
+
+            <span>
+              Total
+            </span>
+
+            <strong>
+              ₹{grandTotal.toLocaleString("en-IN")}
+            </strong>
+
+          </div>
+
+
+
+
+
+
+
+          <button
+
+            className="btn-checkout"
+
+            disabled={loading}
+
+            onClick={handlePayment}
+
+          >
+
+            {
+              loading
+              ?
+              "Processing Payment..."
+              :
+              `Pay ₹${grandTotal.toLocaleString("en-IN")}`
+            }
+
+
+          </button>
+
+
+
+        </div>
+
+
+
       </div>
+
+
     </div>
+
+
   );
+
 };
+
 
 export default Checkout;
