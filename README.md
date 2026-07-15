@@ -4,7 +4,7 @@ A full-stack MERN E-Commerce application with modern UI, authentication, product
 
 ## 🚀 Live Demo
 
-Coming Soon...
+https://shopnest-tau-pink.vercel.app/
 
 ---
 
