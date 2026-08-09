@@ -1,357 +1,103 @@
-/* =====================================================
-   SHOPNEST ORDER SUCCESS PAGE
-===================================================== */
+/* ===================================================================
+   SHOPNEST ORDER SUCCESS STYLES
+   =================================================================== */
 
-
-.success-container {
-
-
-  min-height:80vh;
-
-
-  display:flex;
-
-
-  justify-content:center;
-
-
-  align-items:center;
-
-
-  padding:40px 20px;
-
-
-  background:
-
-
-  radial-gradient(
-  circle at top,
-  #dbeafe,
-  transparent 45%
-  );
-
-
+.order-success-page {
+  max-width: 800px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
 }
 
-
-
-
-
-.success-card {
-
-
-  width:100%;
-
-
-  max-width:600px;
-
-
-  text-align:center;
-
-
-  padding:55px 45px;
-
-
-  background:white;
-
-
-  border-radius:32px;
-
-
-  border:1px solid #e2e8f0;
-
-
-  box-shadow:
-
-
-  0 30px 70px rgba(15,23,42,.12);
-
-
+.order-success-card {
+  padding: 60px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-
-
-
-/* =====================================================
-   ICON
-===================================================== */
-
-
-.success-icon {
-
-
-  width:100px;
-
-
-  height:100px;
-
-
-  margin:auto;
-
-
-  display:flex;
-
-
-  align-items:center;
-
-
-  justify-content:center;
-
-
-  border-radius:50%;
-
-
-  background:#dcfce7;
-
-
-  color:#16a34a;
-
-
-  font-size:70px;
-
-
-  animation:successPop .5s ease;
-
-
+.success-icon-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--emerald-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.6);
+  animation: pulseGlow 2s infinite;
 }
 
+.check-icon-large {
+  font-size: 3rem;
+  color: #ffffff;
+}
 
+.success-kicker {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--emerald);
+}
 
+.order-success-card h1 {
+  font-size: 2.4rem;
+  line-height: 1.2;
+}
 
-@keyframes successPop {
+.success-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 600px;
+}
 
+.order-confirmed-summary {
+  width: 100%;
+  max-width: 620px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: var(--radius-md);
+  margin: 10px 0;
+}
 
-  0%{
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
+.summary-stat span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+}
 
-    transform:scale(0);
+.summary-stat strong {
+  font-size: 1rem;
+  color: #ffffff;
+}
 
+.success-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+}
 
+@media (max-width: 640px) {
+  .order-confirmed-summary {
+    grid-template-columns: 1fr;
   }
-
-
-  100%{
-
-
-    transform:scale(1);
-
-
-  }
-
-
-}
-
-
-
-
-
-
-.success-card h1 {
-
-
-  margin:30px 0 15px;
-
-
-  font-size:38px;
-
-
-  font-weight:950;
-
-
-  color:#0f172a;
-
-
-}
-
-
-
-
-
-.success-card p {
-
-
-  color:#64748b;
-
-
-  line-height:1.8;
-
-
-  font-size:17px;
-
-
-}
-
-
-
-
-
-.success-card strong {
-
-
-  color:#2563eb;
-
-
-}
-
-
-
-
-
-
-/* =====================================================
-   BUTTONS
-===================================================== */
-
-
-.success-buttons {
-
-
-  display:flex;
-
-
-  flex-direction:column;
-
-
-  gap:15px;
-
-
-  margin-top:35px;
-
-
-}
-
-
-
-
-
-.success-btn {
-
-
-  padding:16px;
-
-
-  border-radius:16px;
-
-
-  text-decoration:none;
-
-
-  font-weight:900;
-
-
-  transition:.35s;
-
-
-}
-
-
-
-
-
-.primary-success {
-
-
-  background:
-
-
-  linear-gradient(
- 135deg,
- #2563eb,
- #60a5fa
- );
-
-
-  color:white;
-
-
-}
-
-
-
-
-.secondary-success {
-
-
-  border:2px solid #2563eb;
-
-
-  color:#2563eb;
-
-
-}
-
-
-
-
-.primary-success:hover,
-.secondary-success:hover {
-
-
-  transform:translateY(-5px);
-
-
-}
-
-
-
-
-
-.secondary-success:hover {
-
-
-  background:#2563eb;
-
-
-  color:white;
-
-
-}
-
-
-
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-
-@media(max-width:600px){
-
-
-.success-card {
-
-
- padding:40px 25px;
-
-
-}
-
-
-
-.success-card h1 {
-
-
- font-size:30px;
-
-
-}
-
-
-
-.success-icon {
-
-
- width:80px;
-
-
- height:80px;
-
-
- font-size:55px;
-
-
-}
-
-
 }

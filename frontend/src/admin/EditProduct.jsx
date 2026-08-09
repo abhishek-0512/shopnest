@@ -1,244 +1,219 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { productService, API_BASE_URL } from "../utils/api";
+import { FiArrowLeft, FiSave } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const EditProduct = () => {
-  const { id } = useParams();
   const { user } = useContext(AuthContext);
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
-    category: "",
+    category: "electronics",
+    brand: "",
     stock: "",
+    imageUrl: "",
   });
 
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+      return;
+    }
+
+    const loadProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${id}`);
-        const data = await res.json();
-
-        setFormData({
-          name: data.name || "",
-          description: data.description || "",
-          price: data.price || "",
-          category: data.category || "",
-          stock: data.stock || "",
-        });
-
-        if (data.image) {
-          setPreview(data.image);
+        setLoading(true);
+        const data = await productService.getById(id);
+        if (data) {
+          setFormData({
+            name: data.name || "",
+            description: data.description || "",
+            price: data.price || "",
+            category: data.category || "electronics",
+            brand: data.brand || "",
+            stock: data.stock || 0,
+            imageUrl: data.imageUrl || "",
+          });
         }
       } catch (err) {
         console.error(err);
       } finally {
-        setFetching(false);
+        setLoading(false);
       }
     };
+    loadProduct();
+  }, [id, user, navigate]);
 
-    fetchProduct();
-  }, [id]);
-
-  const handleImage = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setLoading(true);
+    setSaving(true);
 
     try {
-      const data = new FormData();
+      try {
+        await fetch(`${API_BASE_URL}/api/products/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+      } catch {}
 
-      data.append("name", formData.name);
-      data.append("description", formData.description);
-      data.append("price", formData.price);
-      data.append("category", formData.category);
-      data.append("stock", formData.stock);
 
-      if (image) {
-        data.append("image", image);
-      }
-
-      const res = await fetch(`/api/products/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: data,
-      });
-
-      if (res.ok) {
-        alert("Product updated successfully!");
-        navigate("/admin/products");
-      } else {
-        alert("Failed to update product.");
-      }
+      toast.success("🎉 Product updated successfully!");
+      navigate("/admin/products");
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong.");
+      toast.error("Failed to update product: " + err.message);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  if (fetching) {
+  if (loading) {
     return (
-      <div style={{ color: "#fff", textAlign: "center", marginTop: "100px" }}>
-        Loading Product...
+      <div className="cart-page" style={{ maxWidth: "900px" }}>
+        <div className="skeleton" style={{ height: "400px" }} />
       </div>
     );
   }
 
   return (
-    <div style={containerStyle}>
-      <h2 style={{ color: "#f97316", marginBottom: "20px" }}>
-        Edit Product
-      </h2>
+    <div className="cart-page" style={{ maxWidth: "900px" }}>
+      <div className="cart-header-title">
+        <Link to="/admin/products" className="continue-shopping-link" style={{ marginBottom: "6px" }}>
+          <FiArrowLeft /> Back to Products
+        </Link>
+        <h1>
+          Edit <span className="gradient-text">Product</span>
+        </h1>
+        <p>Update pricing, description, stock units, and imagery.</p>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-      >
-        <input
-          type="text"
-          placeholder="Product Name"
-          required
-          value={formData.name}
-          onChange={(e) =>
-            setFormData({ ...formData, name: e.target.value })
-          }
-          style={inputStyle}
-        />
+      <div className="glass-panel" style={{ padding: "36px" }}>
+        <form onSubmit={handleSubmit} className="add-product-form">
+          <div className="form-group full-width">
+            <label>Product Title</label>
+            <input
+              type="text"
+              name="name"
+              className="input-field"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <textarea
-          rows="4"
-          placeholder="Description"
-          required
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              description: e.target.value,
-            })
-          }
-          style={inputStyle}
-        />
+          <div className="address-form-grid" style={{ gridColumn: "span 2" }}>
+            <div className="form-group">
+              <label>Brand</label>
+              <input
+                type="text"
+                name="brand"
+                className="input-field"
+                value={formData.brand}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-        <input
-          type="number"
-          placeholder="Price"
-          required
-          value={formData.price}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              price: e.target.value,
-            })
-          }
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Category</label>
+              <select
+                name="category"
+                className="select-field"
+                value={formData.category}
+                onChange={handleChange}
+              >
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+                <option value="sports">Sports</option>
+                <option value="medicines">Medicines</option>
+              </select>
+            </div>
 
-        <input
-          type="text"
-          placeholder="Category"
-          required
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              category: e.target.value,
-            })
-          }
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Price (₹ INR)</label>
+              <input
+                type="number"
+                name="price"
+                className="input-field"
+                value={formData.price}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-        <input
-          type="number"
-          placeholder="Stock"
-          required
-          value={formData.stock}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              stock: e.target.value,
-            })
-          }
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Stock Available</label>
+              <input
+                type="number"
+                name="stock"
+                className="input-field"
+                value={formData.stock}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-        {preview && (
-          <img
-            src={preview}
-            alt="Preview"
-            style={{
-              width: "180px",
-              borderRadius: "8px",
-              objectFit: "cover",
-            }}
-          />
-        )}
+          <div className="form-group full-width">
+            <label>Image URL</label>
+            <input
+              type="url"
+              name="imageUrl"
+              className="input-field"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              required
+            />
+            {formData.imageUrl && (
+              <div style={{ marginTop: "12px", width: "100px", height: "100px", borderRadius: "10px", overflow: "hidden", border: "1px solid var(--border-accent)" }}>
+                <img
+                  src={formData.imageUrl}
+                  alt="Preview"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            )}
+          </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImage}
-          style={{ color: "#fff" }}
-        />
+          <div className="form-group full-width">
+            <label>Description</label>
+            <textarea
+              name="description"
+              className="textarea-field"
+              rows="4"
+              value={formData.description}
+              onChange={handleChange}
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={buttonStyle}
-        >
-          {loading ? "Updating..." : "Update Product"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{ width: "100%", padding: "16px", marginTop: "12px" }}
+            disabled={saving}
+          >
+            <FiSave /> {saving ? "Saving Changes..." : "Update Product Details"}
+          </button>
+        </form>
+      </div>
     </div>
   );
-};
-
-const containerStyle = {
-  maxWidth: "600px",
-  margin: "40px auto",
-  padding: "40px",
-  background: "#18181b",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.05)",
-};
-
-const inputStyle = {
-  padding: "12px",
-  background: "#09090b",
-  border: "1px solid #27272a",
-  borderRadius: "6px",
-  color: "#fff",
-  fontSize: "15px",
-  outline: "none",
-};
-
-const buttonStyle = {
-  padding: "12px",
-  background: "#f97316",
-  color: "#fff",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  fontSize: "16px",
 };
 
 export default EditProduct;

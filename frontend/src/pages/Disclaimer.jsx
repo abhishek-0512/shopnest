@@ -1,76 +1,46 @@
 import React from "react";
+import { FiShield, FiInfo } from "react-icons/fi";
 
 const Disclaimer = () => {
   return (
-    <div style={containerStyle}>
-      <h2 style={titleStyle}>Legal & Site Disclaimer</h2>
+    <div className="cart-page" style={{ maxWidth: "900px" }}>
+      <div className="cart-header-title">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--primary-light)", marginBottom: "4px" }}>
+          <FiInfo /> <span style={{ fontWeight: "800", fontSize: "0.85rem", textTransform: "uppercase" }}>Project Disclosure</span>
+        </div>
+        <h1>
+          Platform <span className="gradient-text">Disclaimer & Notice</span>
+        </h1>
+        <p>Demonstration, test transactions, and educational project guidelines.</p>
+      </div>
 
-      <p style={text}>
-        ShopNest is a portfolio / educational project built for learning modern
-        full-stack development. It does not represent a real commercial
-        e-commerce service.
-      </p>
+      <div className="glass-panel" style={{ padding: "36px", display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>1. Demonstration & Portfolio Purpose</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            <strong>ShopNest</strong> is a high-performance, full-stack portfolio showcase engineered to demonstrate
+            advanced modern web architectures, state management, checkout flows, and user interfaces.
+          </p>
+        </div>
 
-      <h4 style={heading}>1. Accuracy of Information</h4>
-      <p style={text}>
-        Product data, images, and content shown in this project may be dummy or
-        sample data used for demonstration purposes only.
-      </p>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>2. Test Payment Environments</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            All payment features operate in simulation or sandbox environments (including Razorpay Test Mode and
+            Instant Demo Checkout). No actual monetary charges are processed.
+          </p>
+        </div>
 
-      <h4 style={heading}>2. Payments</h4>
-      <p style={text}>
-        All payment features (if implemented) are intended for testing only
-        using sandbox environments such as Razorpay test mode. No real
-        transactions are processed.
-      </p>
-
-      <h4 style={heading}>3. External Links</h4>
-      <p style={text}>
-        This project may include external links. We are not responsible for the
-        content or behavior of third-party websites.
-      </p>
-
-      <p style={note}>
-        By using this application, you acknowledge that it is for educational
-        purposes only.
-      </p>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>3. Product Imagery & Trademarks</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            All brand trademarks (Apple, Sony, Nike, Garmin, Omron, etc.) and high-resolution Unsplash photography
+            are the property of their respective owners and used solely for design demonstration.
+          </p>
+        </div>
+      </div>
     </div>
   );
-};
-
-const containerStyle = {
-  maxWidth: "900px",
-  margin: "40px auto",
-  padding: "40px",
-  background: "#18181b",
-  borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.05)",
-  color: "#a1a1aa",
-  lineHeight: "1.7",
-};
-
-const titleStyle = {
-  color: "#fff",
-  marginBottom: "20px",
-  borderBottom: "1px solid rgba(255,255,255,0.1)",
-  paddingBottom: "10px",
-};
-
-const heading = {
-  color: "#f97316",
-  marginTop: "20px",
-  marginBottom: "8px",
-};
-
-const text = {
-  marginBottom: "15px",
-};
-
-const note = {
-  marginTop: "25px",
-  fontStyle: "italic",
-  fontSize: "0.9rem",
-  color: "#71717a",
 };
 
 export default Disclaimer;

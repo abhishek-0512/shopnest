@@ -1,492 +1,213 @@
-/* =====================================================
-   SHOPNEST PREMIUM AUTH UI
-===================================================== */
+/* ===================================================================
+   SHOPNEST AUTH STYLES (LOGIN & REGISTER)
+   =================================================================== */
 
-
-/* =====================================================
-   AUTH CONTAINER
-===================================================== */
-
-
-.auth-container {
-
-
-  min-height:75vh;
-
-
-  display:flex;
-
-
-  align-items:center;
-
-
-  justify-content:center;
-
-
-  padding:50px 20px;
-
-
-  background:
-
-
-  radial-gradient(
-  circle at top left,
-  #dbeafe,
-  transparent 40%
-  );
-
-
+.auth-page-container {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
 }
 
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 32px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 35px rgba(99, 102, 241, 0.15);
+  border: 1px solid var(--border-glass-light);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
+.auth-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
 
+.auth-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-gradient-subtle);
+  border: 1px solid var(--border-accent);
+  color: var(--primary-light);
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 4px;
+}
 
+.auth-header h2 {
+  font-size: 1.8rem;
+  margin: 0;
+}
 
-/* =====================================================
-   AUTH CARD
-===================================================== */
+.auth-header p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
 
+/* Demo Credentials Box */
+.demo-credentials-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
+.demo-hint-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--primary-light);
+}
+
+.demo-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
+.demo-btn-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-fast);
+}
+
+.demo-btn-pill.admin {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.demo-btn-pill.admin:hover {
+  background: var(--amber);
+  color: #000;
+}
+
+.demo-btn-pill.user {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.demo-btn-pill.user:hover {
+  background: var(--emerald);
+  color: #000;
+}
+
+/* Form */
 .auth-form {
-
-
-  width:100%;
-
-
-  max-width:450px;
-
-
-  padding:45px;
-
-
-  background:
-
-
-  rgba(255,255,255,.9);
-
-
-  backdrop-filter:blur(15px);
-
-
-  border-radius:30px;
-
-
-  border:1px solid #e2e8f0;
-
-
-  box-shadow:
-
-
-  0 25px 60px rgba(15,23,42,.12);
-
-
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-
-
-
-
-.auth-form h2 {
-
-
-  text-align:center;
-
-
-  font-size:38px;
-
-
-  font-weight:950;
-
-
-  color:#0f172a;
-
-
-  margin-bottom:35px;
-
-
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-
-
-
-
-/* =====================================================
-   INPUTS
-===================================================== */
-
-
-.auth-form input {
-
-
-  width:100%;
-
-
-  padding:16px 18px;
-
-
-  margin-bottom:20px;
-
-
-  border-radius:16px;
-
-
-  border:1px solid #cbd5e1;
-
-
-  outline:none;
-
-
-  font-size:15px;
-
-
-  transition:.3s;
-
-
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--text-subtle);
+  font-size: 1.1rem;
 }
 
-
-
-.auth-form input:focus {
-
-
-  border-color:#2563eb;
-
-
-  box-shadow:
-
-
-  0 0 0 4px rgba(37,99,235,.12);
-
-
+.input-with-icon input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 13px 44px 13px 46px;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
 }
 
-
-
-
-/* =====================================================
-   BUTTON
-===================================================== */
-
-
-.auth-form .btn {
-
-
-  width:100%;
-
-
-  border:none;
-
-
-  padding:17px;
-
-
-  border-radius:16px;
-
-
-  background:
-
-
-  linear-gradient(
- 135deg,
- #2563eb,
- #60a5fa
- );
-
-
-  color:white;
-
-
-  font-size:16px;
-
-
-  font-weight:900;
-
-
-  cursor:pointer;
-
-
-  transition:.35s;
-
-
+.input-with-icon input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  background: rgba(17, 24, 39, 0.95);
 }
 
-
-
-
-
-.auth-form .btn:hover {
-
-
-  transform:translateY(-5px);
-
-
-  box-shadow:
-
-
-  0 20px 40px rgba(37,99,235,.3);
-
-
+.eye-toggle-btn {
+  position: absolute;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
-
-
-.auth-form .btn:disabled {
-
-
-  opacity:.7;
-
-
-  cursor:not-allowed;
-
-
+.eye-toggle-btn:hover {
+  color: #fff;
 }
 
-
-
-
-
-/* =====================================================
-   TEXT
-===================================================== */
-
-
-.auth-form p {
-
-
-  text-align:center;
-
-
-  margin-top:25px;
-
-
-  color:#64748b;
-
-
-  font-weight:600;
-
-
+.member-perks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
 }
 
-
-
-.auth-form p a {
-
-
-  color:#2563eb;
-
-
-  text-decoration:none;
-
-
-  font-weight:800;
-
-
+.perk-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--emerald);
+  font-weight: 600;
 }
 
-
-
-.auth-form p a:hover {
-
-
-  text-decoration:underline;
-
-
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  margin-top: 4px;
 }
 
-
-
-
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-
-@media(max-width:600px){
-
-
-.auth-form {
-
-
- padding:30px 25px;
-
-
+.auth-footer {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding-top: 14px;
+  border-top: 1px solid var(--border-glass);
 }
 
-
-
-.auth-form h2 {
-
-
- font-size:30px;
-
-
+.auth-link {
+  color: var(--primary-light);
+  font-weight: 700;
 }
 
-
-}
-/* =====================================================
-   AUTH SPLIT DESIGN
-===================================================== */
-
-
-.auth-wrapper {
-
-  width:100%;
-
-  max-width:1100px;
-
-  display:grid;
-
-  grid-template-columns:1fr 450px;
-
-  gap:70px;
-
-  align-items:center;
-
-}
-
-
-
-
-.auth-brand h1 {
-
-
-  font-size:75px;
-
-  font-weight:950;
-
-
-  background:
-
-  linear-gradient(
-    135deg,
-    #2563eb,
-    #60a5fa
-  );
-
-
-  -webkit-background-clip:text;
-
-  -webkit-text-fill-color:transparent;
-
-
-}
-
-
-
-.auth-brand p {
-
-
-  font-size:22px;
-
-
-  color:#64748b;
-
-
-  line-height:1.7;
-
-
-  max-width:450px;
-
-
-}
-
-
-
-
-.auth-features {
-
-
-  display:flex;
-
-
-  flex-direction:column;
-
-
-  gap:15px;
-
-
-  margin-top:35px;
-
-
-}
-
-
-
-.auth-features span {
-
-
-  padding:16px 20px;
-
-
-  background:white;
-
-
-  border-radius:18px;
-
-
-  font-weight:800;
-
-
-  color:#334155;
-
-
-  box-shadow:
-
-
-  0 12px 30px rgba(15,23,42,.08);
-
-
-}
-
-
-
-
-
-@media(max-width:900px){
-
-
-.auth-wrapper {
-
-
-  grid-template-columns:1fr;
-
-
-  gap:40px;
-
-
-}
-
-
-
-.auth-brand {
-
-
-  text-align:center;
-
-
-}
-
-
-
-.auth-brand p {
-
-
-  margin:auto;
-
-
-}
-
-
-
-.auth-brand h1 {
-
-
-  font-size:55px;
-
-
-}
-
-
+.auth-link:hover {
+  text-decoration: underline;
 }

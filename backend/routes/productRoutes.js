@@ -8,6 +8,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductReview,
 } = require("../controllers/productController");
 
 const router = express.Router();
@@ -23,6 +24,10 @@ router
   .route("/")
   .get(getProducts)
   .post(protect, admin, upload.single("image"), createProduct);
+
+router
+  .route("/:id/reviews")
+  .post(protect, createProductReview);
 
 router
   .route("/:id")

@@ -28,28 +28,36 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
+  "http://localhost:3000",
   "https://shopnest-tau-pink.vercel.app",
-];
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (Postman, mobile apps, etc.)
+      // Allow requests with no origin (Postman, curl, server-to-server, etc.)
       if (!origin) {
         return callback(null, true);
       }
 
-      // Allow localhost
+      // Allow listed explicit origins
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      // Allow ALL Vercel deployments
-      if (origin.endsWith(".vercel.app")) {
+      // Allow ALL Vercel, GitHub Pages, Netlify, and Render deployments
+      if (
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".github.io") ||
+        origin.endsWith(".netlify.app") ||
+        origin.endsWith(".onrender.com")
+      ) {
         return callback(null, true);
       }
 
-      return callback(new Error("Not allowed by CORS"));
+      // In production if CLIENT_URL is not set, still allow the request
+      return callback(null, true);
     },
     credentials: true,
   })

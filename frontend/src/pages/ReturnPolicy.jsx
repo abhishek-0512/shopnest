@@ -1,72 +1,57 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { FiRotateCcw, FiCheckCircle, FiShield, FiArrowRight } from "react-icons/fi";
 
 const ReturnPolicy = () => {
   return (
-    <div style={container}>
-      <h2 style={title}>Return & Refund Policy</h2>
+    <div className="cart-page" style={{ maxWidth: "900px" }}>
+      <div className="cart-header-title">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--primary-light)", marginBottom: "4px" }}>
+          <FiRotateCcw /> <span style={{ fontWeight: "800", fontSize: "0.85rem", textTransform: "uppercase" }}>Customer Protection</span>
+        </div>
+        <h1>
+          7-Day Hassle-Free <span className="gradient-text">Return Policy</span>
+        </h1>
+        <p>Transparent, fast, and 100% risk-free return and doorstep exchange policy.</p>
+      </div>
 
-      <p style={text}>
-        At ShopNest, we value customer satisfaction. If you are not satisfied
-        with your purchase, you may request a return within 30 days of
-        receiving your order.
-      </p>
+      <div className="glass-panel" style={{ padding: "36px", display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>1. 7-Day Window for Returns</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            At ShopNest, we strive for complete satisfaction. If your product is damaged,
+            defective, or differs from its description, you can initiate a return or exchange
+            within 7 days of delivery directly from your <strong>My Orders</strong> hub.
+          </p>
+        </div>
 
-      <h4 style={heading}>1. Eligibility for Returns</h4>
-      <p style={text}>
-        Items must be unused, in original condition, and returned with original
-        packaging and proof of purchase to be eligible for a return.
-      </p>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>2. Easy Doorstep Pickup</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            Our verified courier partners will inspect and collect the item from your doorstep.
+            Please ensure items are preserved in original packaging with manufacturer tags and warranty cards intact.
+          </p>
+        </div>
 
-      <h4 style={heading}>2. Refund Process</h4>
-      <p style={text}>
-        Once your return is received and inspected, you will be notified via
-        email. Approved refunds will be processed to your original payment
-        method within 5–7 business days.
-      </p>
+        <div>
+          <h3 style={{ color: "#fff", marginBottom: "8px" }}>3. Instant Refund Processing</h3>
+          <p style={{ color: "var(--text-secondary)", lineHeight: "1.7" }}>
+            Once the package is picked up, refunds are initiated immediately to your original payment method
+            (UPI, Card, Net Banking) within 24 to 48 hours.
+          </p>
+        </div>
 
-      <h4 style={heading}>3. Non-Refundable Items</h4>
-      <p style={text}>
-        Certain items such as perishable goods, custom products, and digital
-        downloads are not eligible for returns or refunds.
-      </p>
-
-      <h4 style={heading}>4. Shipping Costs</h4>
-      <p style={text}>
-        Customers are responsible for return shipping costs. Shipping fees are
-        non-refundable unless the return is due to a defect or error from our
-        side.
-      </p>
+        <div style={{ marginTop: "10px", padding: "16px 20px", background: "var(--primary-gradient-subtle)", borderRadius: "var(--radius-md)", border: "1px solid var(--border-accent)" }}>
+          <strong style={{ color: "#fff", display: "block", marginBottom: "4px" }}>
+            Need help with an ongoing order?
+          </strong>
+          <span style={{ fontSize: "0.88rem", color: "var(--text-secondary)" }}>
+            Our 24/7 dedicated support team is available at support@shopnest.com or +91 1800-SHOPNEST.
+          </span>
+        </div>
+      </div>
     </div>
   );
-};
-
-/* STYLES */
-const container = {
-  maxWidth: "900px",
-  margin: "40px auto",
-  padding: "40px",
-  background: "#18181b",
-  borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.05)",
-  color: "#a1a1aa",
-  lineHeight: "1.7",
-};
-
-const title = {
-  color: "#fff",
-  marginBottom: "20px",
-  borderBottom: "1px solid rgba(255,255,255,0.1)",
-  paddingBottom: "10px",
-};
-
-const heading = {
-  color: "#f97316",
-  marginTop: "20px",
-  marginBottom: "8px",
-};
-
-const text = {
-  marginBottom: "15px",
 };
 
 export default ReturnPolicy;

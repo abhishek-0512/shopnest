@@ -1,183 +1,195 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { orderService } from "../utils/api";
+import InvoiceModal from "../components/InvoiceModal";
+import {
+  FiArrowLeft,
+  FiFileText,
+} from "react-icons/fi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { toast } from "react-toastify";
 
 const AdminOrders = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("all");
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || user.role !== "admin") {
+      navigate("/");
+      return;
+    }
 
-    const fetchOrders = async () => {
+    const loadOrders = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/orders`, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          setOrders(Array.isArray(data) ? data : []);
-        } else {
-          setOrders([]);
-        }
-      } catch (error) {
-        console.error(error);
-        setOrders([]);
+        setLoading(true);
+        const data = await orderService.getAllAdmin();
+        setOrders(data);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
+    loadOrders();
+  }, [user, navigate]);
 
-    fetchOrders();
-  }, [user]);
-
-  const updateStatus = async (id, status) => {
+  const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const res = await fetch(`${API_URL}/api/orders/${id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (res.ok) {
-        setOrders((prev) =>
-          prev.map((order) =>
-            order._id === id ? { ...order, status } : order
-          )
-        );
-      } else {
-        alert("Failed to update order status.");
-      }
-    } catch (error) {
-      console.error(error);
+      await orderService.updateStatus(orderId, newStatus);
+      setOrders((prev) =>
+        prev.map((o) => (o._id === orderId ? { ...o, orderStatus: newStatus } : o))
+      );
+      toast.success(`Order #${orderId} status updated to ${newStatus}`);
+    } catch (err) {
+      toast.error("Failed to update status: " + err.message);
     }
   };
 
-  if (!user) return null;
+  const filteredOrders =
+    filterStatus === "all"
+      ? orders
+      : orders.filter((o) => o.orderStatus === filterStatus);
 
   return (
-    <div style={containerStyle}>
-      <h2 style={{ color: "#f97316", marginBottom: "20px" }}>
-        Manage Orders
-      </h2>
+    <div className="cart-page">
+      <div className="cart-header-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <Link to="/admin" className="continue-shopping-link" style={{ marginBottom: "6px" }}>
+            <FiArrowLeft /> Back to Dashboard
+          </Link>
+          <h1>
+            Customer <span className="gradient-text">Orders & Fulfillment</span>
+          </h1>
+          <p>Update order tracking milestones, manage deliveries, and view invoices.</p>
+        </div>
+
+        {/* STATUS FILTER */}
+        <select
+          className="select-field"
+          style={{ width: "200px" }}
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="all">All Statuses ({orders.length})</option>
+          <option value="Processing">Processing</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
 
       {loading ? (
-        <p style={{ textAlign: "center" }}>Loading orders...</p>
+        <div className="skeleton" style={{ height: "400px" }} />
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table style={tableStyle}>
+        <div className="glass-panel" style={{ overflowX: "auto", padding: 0 }}>
+          <table className="invoice-table" style={{ margin: 0 }}>
             <thead>
-              <tr style={rowStyle}>
-                <th style={thStyle}>ORDER ID</th>
-                <th style={thStyle}>USER</th>
-                <th style={thStyle}>TOTAL</th>
-                <th style={thStyle}>DATE</th>
-                <th style={thStyle}>STATUS</th>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Date</th>
+                <th>Status Milestone</th>
+                <th className="text-right">Invoice</th>
               </tr>
             </thead>
-
             <tbody>
-              {orders.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="5"
-                    style={{ padding: "20px", textAlign: "center" }}
-                  >
-                    No orders found.
-                  </td>
-                </tr>
-              ) : (
-                orders.map((order) => (
-                  <tr key={order._id} style={rowStyle}>
-                    <td style={tdStyle}>
-                      {order._id?.substring(0, 8)}...
+              {filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
+                  <tr key={order._id}>
+                    <td>
+                      <strong style={{ color: "#fff", fontSize: "0.85rem" }}>
+                        #{order._id}
+                      </strong>
                     </td>
-
-                    <td style={tdStyle}>
-                      {order.userId?.name || "Deleted User"}
+                    <td>
+                      <div>
+                        <strong style={{ color: "#fff", display: "block" }}>
+                          {order.shippingAddress?.fullName || order.user?.name || "Customer"}
+                        </strong>
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                          {order.shippingAddress?.city}, {order.shippingAddress?.state}
+                        </span>
+                      </div>
                     </td>
-
-                    <td style={tdStyle}>
-                      ₹{Number(order.totalAmount || 0).toFixed(2)}
+                    <td>
+                      <span style={{ fontSize: "0.85rem" }}>
+                        {(order.orderItems || []).length} items
+                      </span>
                     </td>
-
-                    <td style={tdStyle}>
-                      {order.createdAt
-                        ? new Date(order.createdAt).toLocaleDateString()
-                        : "-"}
+                    <td>
+                      <strong style={{ color: "var(--emerald)" }}>
+                        ₹{Number(order.totalPrice || order.totalAmount || 0).toLocaleString("en-IN")}
+                      </strong>
                     </td>
-
-                    <td style={tdStyle}>
-                      <select
-                        value={order.status}
-                        onChange={(e) =>
-                          updateStatus(order._id, e.target.value)
-                        }
-                        style={selectStyle}
+                    <td>
+                      <span
+                        className={`badge ${
+                          order.paymentStatus === "Paid"
+                            ? "badge-emerald"
+                            : "badge-amber"
+                        }`}
                       >
-                        <option value="Pending">Pending</option>
+                        {order.paymentStatus || "PAID"}
+                      </span>
+                    </td>
+                    <td style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
+                      {new Date(order.createdAt || Date.now()).toLocaleDateString()}
+                    </td>
+                    <td>
+                      <select
+                        className="select-field"
+                        style={{ padding: "6px 10px", fontSize: "0.82rem", width: "140px" }}
+                        value={order.orderStatus || "Processing"}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                      >
+                        <option value="Processing">Processing</option>
                         <option value="Shipped">Shipped</option>
                         <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
                       </select>
+                    </td>
+                    <td className="text-right">
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: "6px 12px", fontSize: "0.82rem" }}
+                        onClick={() => setSelectedInvoiceOrder(order)}
+                        title="Print invoice"
+                      >
+                        <FiFileText /> Invoice
+                      </button>
                     </td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
+                    No orders found matching this filter.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
       )}
+
+      {selectedInvoiceOrder && (
+        <InvoiceModal
+          order={selectedInvoiceOrder}
+          onClose={() => setSelectedInvoiceOrder(null)}
+        />
+      )}
     </div>
   );
-};
-
-const containerStyle = {
-  maxWidth: "1200px",
-  margin: "40px auto",
-  padding: "30px",
-  background: "#18181b",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.05)",
-  color: "#fafafa",
-};
-
-const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-};
-
-const rowStyle = {
-  borderBottom: "1px solid rgba(255,255,255,0.1)",
-};
-
-const thStyle = {
-  padding: "15px",
-  textAlign: "left",
-  color: "#a1a1aa",
-  fontSize: "0.9rem",
-};
-
-const tdStyle = {
-  padding: "15px",
-  textAlign: "left",
-};
-
-const selectStyle = {
-  background: "#09090b",
-  color: "#fff",
-  padding: "6px",
-  border: "1px solid #27272a",
-  borderRadius: "4px",
-  outline: "none",
 };
 
 export default AdminOrders;

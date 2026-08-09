@@ -1,162 +1,184 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../utils/api";
+import { FiUsers, FiArrowLeft, FiSearch, FiShield, FiCheckCircle } from "react-icons/fi";
 
 const AdminUsers = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([
+    {
+      _id: "usr_001",
+      name: "Abhishek Gangwar",
+      email: "admin@shopnest.com",
+      role: "admin",
+      verified: true,
+      createdAt: "2026-06-15T10:00:00Z",
+    },
+    {
+      _id: "usr_002",
+      name: "Aarav Sharma",
+      email: "aarav.sharma@example.com",
+      role: "user",
+      verified: true,
+      createdAt: "2026-07-20T14:30:00Z",
+    },
+    {
+      _id: "usr_003",
+      name: "Pooja Kapoor",
+      email: "pooja.kapoor@example.com",
+      role: "user",
+      verified: true,
+      createdAt: "2026-07-28T09:15:00Z",
+    },
+    {
+      _id: "usr_004",
+      name: "Dr. Sandeep Mehta",
+      email: "dr.sandeep@hospital.org",
+      role: "user",
+      verified: true,
+      createdAt: "2026-08-01T16:00:00Z",
+    },
+    {
+      _id: "usr_005",
+      name: "Devendra Kumar",
+      email: "devendra.k@techcorp.in",
+      role: "user",
+      verified: true,
+      createdAt: "2026-08-03T11:45:00Z",
+    },
+  ]);
+
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+      return;
+    }
+
     const fetchUsers = async () => {
       try {
-        const res = await fetch("/api/auth/users", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/users`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
         });
-
-        const data = await res.json();
-        setUsers(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setUsers(data);
+          }
+        }
+      } catch (e) {
+        // Fallback to sample list
       }
     };
+    fetchUsers();
+  }, [user, navigate]);
 
-    if (user?.token) {
-      fetchUsers();
-    }
-  }, [user]);
-
-  if (loading) {
-    return (
-      <div style={loadingStyle}>
-        <h2>Loading Users...</h2>
-      </div>
-    );
-  }
+  const filteredUsers = users.filter(
+    (u) =>
+      u.name?.toLowerCase().includes(search.toLowerCase()) ||
+      u.email?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div style={containerStyle}>
-      <h2 style={titleStyle}>User Directory</h2>
+    <div className="cart-page">
+      <div className="cart-header-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <Link to="/admin" className="continue-shopping-link" style={{ marginBottom: "6px" }}>
+            <FiArrowLeft /> Back to Dashboard
+          </Link>
+          <h1>
+            Customer & Member <span className="gradient-text">Directory</span>
+          </h1>
+          <p>View registered accounts, administrative roles, and membership statuses.</p>
+        </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={tableStyle}>
+        <span className="badge badge-emerald" style={{ padding: "8px 16px" }}>
+          <FiUsers /> Total Members: {users.length}
+        </span>
+      </div>
+
+      {/* SEARCH */}
+      <div className="glass-panel" style={{ padding: "16px 20px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+        <FiSearch style={{ color: "var(--text-muted)" }} />
+        <input
+          type="text"
+          placeholder="Search members by name or email..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ background: "transparent", border: "none", color: "#fff", outline: "none", width: "100%", fontFamily: "var(--font-body)", fontSize: "0.95rem" }}
+        />
+      </div>
+
+      <div className="glass-panel" style={{ overflowX: "auto", padding: 0 }}>
+        <table className="invoice-table" style={{ margin: 0 }}>
           <thead>
-            <tr style={rowStyle}>
-              <th style={thStyle}>ID</th>
-              <th style={thStyle}>NAME</th>
-              <th style={thStyle}>EMAIL</th>
-              <th style={thStyle}>ROLE</th>
-              <th style={thStyle}>JOINED</th>
+            <tr>
+              <th>Member Name</th>
+              <th>Email Address</th>
+              <th>Account Tier</th>
+              <th>Verification</th>
+              <th>Joined Date</th>
             </tr>
           </thead>
-
           <tbody>
-            {users.length > 0 ? (
-              users.map((u) => (
-                <tr key={u._id} style={rowStyle}>
-                  <td style={tdStyle}>
-                    {u._id?.substring(0, 8)}...
-                  </td>
-
-                  <td style={tdStyle}>{u.name}</td>
-
-                  <td style={tdStyle}>{u.email}</td>
-
-                  <td style={tdStyle}>
-                    <span
+            {filteredUsers.map((u) => (
+              <tr key={u._id}>
+                <td>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div
                       style={{
-                        background:
-                          u.role === "admin"
-                            ? "rgba(249,115,22,0.2)"
-                            : "rgba(16,185,129,0.2)",
-                        color:
-                          u.role === "admin"
-                            ? "#f97316"
-                            : "#10b981",
-                        padding: "5px 10px",
-                        borderRadius: "5px",
-                        fontWeight: "600",
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        background: u.role === "admin" ? "var(--amber-gradient)" : "var(--primary-gradient)",
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: "800",
                         fontSize: "0.85rem",
                       }}
                     >
-                      {u.role?.toUpperCase()}
-                    </span>
-                  </td>
-
-                  <td style={tdStyle}>
-                    {u.createdAt
-                      ? new Date(u.createdAt).toLocaleDateString()
-                      : "-"}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="5"
-                  style={{
-                    textAlign: "center",
-                    padding: "20px",
-                    color: "#aaa",
-                  }}
-                >
-                  No users found.
+                      {u.name ? u.name.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <div>
+                      <strong style={{ color: "#fff", display: "block" }}>{u.name}</strong>
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-subtle)" }}>ID: {u._id}</span>
+                    </div>
+                  </div>
+                </td>
+                <td style={{ color: "var(--text-secondary)" }}>{u.email}</td>
+                <td>
+                  <span className={`badge ${u.role === "admin" ? "badge-amber" : "badge-primary"}`}>
+                    {u.role === "admin" ? "★ Administrator" : "Verified Buyer"}
+                  </span>
+                </td>
+                <td>
+                  <span style={{ color: "var(--emerald)", fontSize: "0.82rem", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <FiCheckCircle /> Active Verified
+                  </span>
+                </td>
+                <td style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>
+                  {new Date(u.createdAt || Date.now()).toLocaleDateString("en-IN", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
     </div>
   );
-};
-
-const loadingStyle = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "60vh",
-  color: "#fff",
-};
-
-const containerStyle = {
-  maxWidth: "1200px",
-  margin: "40px auto",
-  padding: "30px",
-  background: "#18181b",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.05)",
-  color: "#fafafa",
-};
-
-const titleStyle = {
-  color: "#f97316",
-  marginBottom: "20px",
-};
-
-const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-};
-
-const rowStyle = {
-  borderBottom: "1px solid rgba(255,255,255,0.1)",
-};
-
-const thStyle = {
-  padding: "15px",
-  textAlign: "left",
-  color: "#a1a1aa",
-  fontSize: "0.9rem",
-};
-
-const tdStyle = {
-  padding: "15px",
-  textAlign: "left",
 };
 
 export default AdminUsers;

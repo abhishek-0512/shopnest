@@ -1,162 +1,179 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { productService } from "../utils/api";
+import {
+  FiPackage,
+  FiPlus,
+  FiEdit,
+  FiTrash2,
+  FiSearch,
+  FiArrowLeft,
+} from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const AdminProducts = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    if (!user || user.role !== "admin") {
+      navigate("/");
+      return;
+    }
+
+    const loadProducts = async () => {
       try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        setProducts(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error(error);
+        setLoading(true);
+        const data = await productService.getAll();
+        setProducts(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
+    loadProducts();
+  }, [user, navigate]);
 
-    fetchProducts();
-  }, []);
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
+  const handleDelete = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
-        const res = await fetch(`/api/products/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
-
-        if (res.ok) {
-          setProducts(products.filter((p) => p._id !== id));
-        } else {
-          alert("Failed to delete product.");
-        }
-      } catch (error) {
-        console.error(error);
+        await productService.delete(id);
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+        toast.success(`Product "${name}" deleted successfully`);
+      } catch (err) {
+        toast.error("Failed to delete product: " + err.message);
       }
     }
   };
 
-  return (
-    <div style={containerStyle}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h2 style={{ color: "#f97316" }}>Manage Products</h2>
+  const filteredProducts = products.filter(
+    (p) =>
+      p.name?.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(search.toLowerCase()) ||
+      p.category?.toLowerCase().includes(search.toLowerCase())
+  );
 
-        <Link to="/admin/add-product" className="btn">
-          + Add Product
+  return (
+    <div className="cart-page">
+      <div className="cart-header-title" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <Link to="/admin" className="continue-shopping-link" style={{ marginBottom: "6px" }}>
+            <FiArrowLeft /> Back to Dashboard
+          </Link>
+          <h1>
+            Manage <span className="gradient-text">Products Catalog</span>
+          </h1>
+          <p>Create, update prices, manage stock quantities, and remove products.</p>
+        </div>
+
+        <Link to="/add-product" className="btn-primary">
+          <FiPlus /> Add New Product
         </Link>
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={tableStyle}>
-          <thead>
-            <tr style={rowStyle}>
-              <th style={thStyle}>ID</th>
-              <th style={thStyle}>NAME</th>
-              <th style={thStyle}>PRICE</th>
-              <th style={thStyle}>CATEGORY</th>
-              <th style={thStyle}>STOCK</th>
-              <th style={thStyle}>ACTIONS</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {products.map((product) => (
-              <tr key={product._id} style={rowStyle}>
-                <td style={tdStyle}>{product._id.substring(0, 8)}...</td>
-
-                <td style={tdStyle}>{product.name}</td>
-
-                <td style={tdStyle}>
-                  ₹{Number(product.price || 0).toFixed(2)}
-                </td>
-
-                <td style={tdStyle}>{product.category}</td>
-
-                <td style={tdStyle}>{product.stock}</td>
-
-                <td style={tdStyle}>
-                  <Link
-                    to={`/admin/edit-product/${product._id}`}
-                    style={editBtn}
-                  >
-                    Edit
-                  </Link>
-
-                  <button
-                    onClick={() => handleDelete(product._id)}
-                    style={deleteBtn}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* SEARCH BAR */}
+      <div className="glass-panel" style={{ padding: "16px 20px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+        <FiSearch style={{ color: "var(--text-muted)" }} />
+        <input
+          type="text"
+          placeholder="Filter catalog by product name, category, or brand..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ background: "transparent", border: "none", color: "#fff", outline: "none", width: "100%", fontFamily: "var(--font-body)", fontSize: "0.95rem" }}
+        />
       </div>
+
+      {/* TABLE */}
+      {loading ? (
+        <div className="skeleton" style={{ height: "400px" }} />
+      ) : (
+        <div className="glass-panel" style={{ overflowX: "auto", padding: "0" }}>
+          <table className="invoice-table" style={{ margin: 0 }}>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Rating</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((p) => (
+                  <tr key={p._id}>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <img
+                          src={p.imageUrl}
+                          alt={p.name}
+                          style={{ width: "44px", height: "44px", borderRadius: "8px", objectFit: "cover" }}
+                        />
+                        <div>
+                          <strong style={{ color: "#fff", display: "block" }}>{p.name}</strong>
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-subtle)" }}>ID: {p._id}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ textTransform: "capitalize", color: "var(--text-secondary)" }}>
+                      {p.category}
+                    </td>
+                    <td style={{ color: "var(--text-secondary)" }}>{p.brand}</td>
+                    <td>
+                      <strong style={{ color: "var(--primary-light)" }}>
+                        ₹{Number(p.price || 0).toLocaleString("en-IN")}
+                      </strong>
+                    </td>
+                    <td>
+                      <span className={`stock-pill ${p.stock > 0 ? "in-stock" : "out-of-stock"}`}>
+                        {p.stock > 0 ? `${p.stock} in stock` : "Out of stock"}
+                      </span>
+                    </td>
+                    <td style={{ color: "#f59e0b", fontWeight: "700" }}>{p.rating || "4.8"} ★</td>
+                    <td className="text-right">
+                      <div style={{ display: "inline-flex", gap: "8px" }}>
+                        <Link
+                          to={`/admin/edit-product/${p._id}`}
+                          className="btn-secondary"
+                          style={{ padding: "6px 12px", fontSize: "0.82rem" }}
+                          title="Edit product"
+                        >
+                          <FiEdit />
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          style={{ padding: "6px 12px", fontSize: "0.82rem" }}
+                          onClick={() => handleDelete(p._id, p.name)}
+                          title="Delete product"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" style={{ textAlign: "center", padding: "40px", color: "var(--text-muted)" }}>
+                    No matching products found in catalog.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
-};
-
-const containerStyle = {
-  maxWidth: "1200px",
-  margin: "40px auto",
-  padding: "30px",
-  background: "#18181b",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.05)",
-  color: "#fafafa",
-};
-
-const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-};
-
-const rowStyle = {
-  borderBottom: "1px solid rgba(255,255,255,0.1)",
-};
-
-const thStyle = {
-  padding: "15px",
-  textAlign: "left",
-  color: "#a1a1aa",
-  fontSize: "0.9rem",
-};
-
-const tdStyle = {
-  padding: "15px",
-  textAlign: "left",
-};
-
-const editBtn = {
-  background: "#3b82f6",
-  color: "#fff",
-  padding: "6px 12px",
-  borderRadius: "4px",
-  marginRight: "10px",
-  textDecoration: "none",
-};
-
-const deleteBtn = {
-  background: "#ef4444",
-  color: "#fff",
-  padding: "6px 12px",
-  borderRadius: "4px",
-  border: "none",
-  cursor: "pointer",
 };
 
 export default AdminProducts;
